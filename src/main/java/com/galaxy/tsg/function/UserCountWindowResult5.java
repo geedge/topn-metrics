@@ -1,5 +1,7 @@
 package com.galaxy.tsg.function;
 
+import com.alibaba.fastjson.JSONObject;
+import com.galaxy.tsg.pojo.TopUrlEntity;
 import org.apache.datasketches.frequencies.ErrorType;
 import org.apache.datasketches.frequencies.ItemsSketch;
 import org.apache.flink.streaming.api.functions.windowing.ProcessAllWindowFunction;
@@ -50,7 +52,17 @@ public class UserCountWindowResult5 extends ProcessAllWindowFunction<HashMap<Str
                         + " UB:" + items[i].getUpperBound()
                         + " LB:" + items[i].getLowerBound();
 
+                String jsonStr = "";
+                if(!entry.getKey().equals("eightSession")){
+                CollectionValue collectionValue = entry.getValue().getStringCollectionValueHashMap().get(items[i].getItem());
+                jsonStr = JSONObject.toJSONString(collectionValue);
+            }else {
+                    TopUrlEntity topUrlEntity = entry.getValue().getStringTopUrlEntityHashMap().get(items[i].getItem());
+                    jsonStr = JSONObject.toJSONString(topUrlEntity);
+                }
 
+
+                collector.collect(jsonStr);
 
 //                String item = items[i].toString();
                 stringBuilder.append(resultStr);
@@ -69,7 +81,7 @@ public class UserCountWindowResult5 extends ProcessAllWindowFunction<HashMap<Str
 
         }
 
-        collector.collect(stringBuilder.toString());
+//        collector.collect(stringBuilder.toString());
 
     }
 

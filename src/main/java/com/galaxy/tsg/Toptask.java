@@ -229,7 +229,7 @@ public class Toptask {
                 //datasketch
 
 
-                //Session_record top1000  21个窗口一并计算
+                //clientip聚合TOP
                 SingleOutputStreamOperator<Entity> clientipdStream2 = inputForSession.filter(new FilterFunction<Entity>() {
                     @Override
                     public boolean filter(Entity value) throws Exception {
@@ -238,10 +238,174 @@ public class Toptask {
                 }).assignTimestampsAndWatermarks(strategyForSession);
 
 
-                AllWindowedStream<Entity, TimeWindow> entityTimeWindowAllWindowedStream = clientipdStream2.windowAll(TumblingEventTimeWindows.of(Time.minutes(WINDOW_TIME_MINUTE)));
-                SingleOutputStreamOperator<String> aggregate = entityTimeWindowAllWindowedStream.aggregate(new UserHashMapCountAgg5(), new UserCountWindowResult5());
-                aggregate.print();
+                clientipdStream2.windowAll(TumblingEventTimeWindows.of(Time.minutes(WINDOW_TIME_MINUTE)))
+                        .aggregate(new DatasketchForMetricsAggregate("oneSession"), new UserCountWindowResult5())
+//                        .print()
+                        .addSink(getKafkaSink("TOP-CLIENT-IP")).setParallelism(3);
 
+                clientipdStream2.windowAll(TumblingEventTimeWindows.of(Time.minutes(WINDOW_TIME_MINUTE)))
+                        .aggregate(new DatasketchForMetricsAggregate("onePkt"), new UserCountWindowResult5())
+//                        .print()
+                        .addSink(getKafkaSink("TOP-CLIENT-IP")).setParallelism(3);
+
+
+                clientipdStream2.windowAll(TumblingEventTimeWindows.of(Time.minutes(WINDOW_TIME_MINUTE)))
+                        .aggregate(new DatasketchForMetricsAggregate("oneByte"), new UserCountWindowResult5())
+//                        .print()
+                        .addSink(getKafkaSink("TOP-CLIENT-IP")).setParallelism(3);
+
+
+
+                //serverip聚合TOP
+
+                SingleOutputStreamOperator<Entity> serveripdStream2 = inputForSession.filter(new FilterFunction<Entity>() {
+                    @Override
+                    public boolean filter(Entity value) throws Exception {
+                        return "IPv6_TCP".equals(value.getCommon_l4_protocol()) || "IPv4_TCP".equals(value.getCommon_l4_protocol());
+                    }
+                }).assignTimestampsAndWatermarks(strategyForSession);
+
+                serveripdStream2.windowAll(TumblingEventTimeWindows.of(Time.minutes(WINDOW_TIME_MINUTE)))
+                        .aggregate(new DatasketchForMetricsAggregate("twoSession"), new UserCountWindowResult5())
+//                        .print()
+                        .addSink(getKafkaSink("TOP-SERVER-IP")).setParallelism(3);
+
+                serveripdStream2.windowAll(TumblingEventTimeWindows.of(Time.minutes(WINDOW_TIME_MINUTE)))
+                        .aggregate(new DatasketchForMetricsAggregate("twoPkt"), new UserCountWindowResult5())
+//                        .print()
+                        .addSink(getKafkaSink("TOP-SERVER-IP")).setParallelism(3);
+
+                serveripdStream2.windowAll(TumblingEventTimeWindows.of(Time.minutes(WINDOW_TIME_MINUTE)))
+                        .aggregate(new DatasketchForMetricsAggregate("twoByte"), new UserCountWindowResult5())
+//                        .print()
+                        .addSink(getKafkaSink("TOP-SERVER-IP")).setParallelism(3);
+
+
+
+                //common_internal_ip聚合TOP
+                SingleOutputStreamOperator<Entity> internalStream2 = inputForSession.filter(new FilterFunction<Entity>() {
+                    @Override
+                    public boolean filter(Entity value) throws Exception {
+                        return StringUtil.isNotEmpty(value.getCommon_internal_ip());
+                    }
+                }).assignTimestampsAndWatermarks(strategyForSession);
+
+                internalStream2.windowAll(TumblingEventTimeWindows.of(Time.minutes(WINDOW_TIME_MINUTE)))
+                        .aggregate(new DatasketchForMetricsAggregate("threeSession"), new UserCountWindowResult5())
+//                        .print()
+                        .addSink(getKafkaSink("TOP-INTERNAL-HOST")).setParallelism(3);
+
+                internalStream2.windowAll(TumblingEventTimeWindows.of(Time.minutes(WINDOW_TIME_MINUTE)))
+                        .aggregate(new DatasketchForMetricsAggregate("threePkt"), new UserCountWindowResult5())
+//                        .print()
+                        .addSink(getKafkaSink("TOP-INTERNAL-HOST")).setParallelism(3);
+
+                internalStream2.windowAll(TumblingEventTimeWindows.of(Time.minutes(WINDOW_TIME_MINUTE)))
+                        .aggregate(new DatasketchForMetricsAggregate("threeByte"), new UserCountWindowResult5())
+//                        .print()
+                        .addSink(getKafkaSink("TOP-INTERNAL-HOST")).setParallelism(3);
+
+
+
+                //common_external_ip聚合TOP
+
+                SingleOutputStreamOperator<Entity> externalStream2 = inputForSession.filter(new FilterFunction<Entity>() {
+                    @Override
+                    public boolean filter(Entity value) throws Exception {
+                        return StringUtil.isNotEmpty(value.getCommon_external_ip());
+                    }
+                }).assignTimestampsAndWatermarks(strategyForSession);
+
+                externalStream2.windowAll(TumblingEventTimeWindows.of(Time.minutes(WINDOW_TIME_MINUTE)))
+                        .aggregate(new DatasketchForMetricsAggregate("fourSession"), new UserCountWindowResult5())
+//                        .print()
+                        .addSink(getKafkaSink("TOP-EXTERNAL-HOST")).setParallelism(3);
+
+                externalStream2.windowAll(TumblingEventTimeWindows.of(Time.minutes(WINDOW_TIME_MINUTE)))
+                        .aggregate(new DatasketchForMetricsAggregate("fourPkt"), new UserCountWindowResult5())
+//                        .print()
+                        .addSink(getKafkaSink("TOP-EXTERNAL-HOST")).setParallelism(3);
+
+                externalStream2.windowAll(TumblingEventTimeWindows.of(Time.minutes(WINDOW_TIME_MINUTE)))
+                        .aggregate(new DatasketchForMetricsAggregate("fourByte"), new UserCountWindowResult5())
+//                        .print()
+                        .addSink(getKafkaSink("TOP-EXTERNAL-HOST")).setParallelism(3);
+
+
+
+                //http_domain聚合TOP
+
+                SingleOutputStreamOperator<Entity> domainStream2 = inputForSession.filter(new FilterFunction<Entity>() {
+                    @Override
+                    public boolean filter(Entity value) throws Exception {
+                        return StringUtil.isNotEmpty(value.getHttp_domain());
+                    }
+                }).assignTimestampsAndWatermarks(strategyForSession);
+
+
+                domainStream2.windowAll(TumblingEventTimeWindows.of(Time.minutes(WINDOW_TIME_MINUTE)))
+                        .aggregate(new DatasketchForMetricsAggregate("fiveSession"), new UserCountWindowResult5())
+//                        .print()
+                        .addSink(getKafkaSink("TOP-WEBSITE-DOMAIN")).setParallelism(3);
+
+                domainStream2.windowAll(TumblingEventTimeWindows.of(Time.minutes(WINDOW_TIME_MINUTE)))
+                        .aggregate(new DatasketchForMetricsAggregate("fivePkt"), new UserCountWindowResult5())
+//                        .print()
+                        .addSink(getKafkaSink("TOP-WEBSITE-DOMAIN")).setParallelism(3);
+
+                domainStream2.windowAll(TumblingEventTimeWindows.of(Time.minutes(WINDOW_TIME_MINUTE)))
+                        .aggregate(new DatasketchForMetricsAggregate("fiveByte"), new UserCountWindowResult5())
+//                        .print()
+                        .addSink(getKafkaSink("TOP-WEBSITE-DOMAIN")).setParallelism(3);
+
+
+                //common_subscriber_id聚合TOP
+                SingleOutputStreamOperator<Entity> userStream2 = inputForSession.filter(new FilterFunction<Entity>() {
+                    @Override
+                    public boolean filter(Entity value) throws Exception {
+                        return StringUtil.isNotEmpty(value.getCommon_subscriber_id());
+                    }
+                }).assignTimestampsAndWatermarks(strategyForSession);
+
+                userStream2.windowAll(TumblingEventTimeWindows.of(Time.minutes(WINDOW_TIME_MINUTE)))
+                        .aggregate(new DatasketchForMetricsAggregate("sixSession"), new UserCountWindowResult5())
+//                        .print()
+                        .addSink(getKafkaSink("TOP-USER")).setParallelism(3);
+
+                userStream2.windowAll(TumblingEventTimeWindows.of(Time.minutes(WINDOW_TIME_MINUTE)))
+                        .aggregate(new DatasketchForMetricsAggregate("sixPkt"), new UserCountWindowResult5())
+//                        .print()
+                        .addSink(getKafkaSink("TOP-USER")).setParallelism(3);
+
+                userStream2.windowAll(TumblingEventTimeWindows.of(Time.minutes(WINDOW_TIME_MINUTE)))
+                        .aggregate(new DatasketchForMetricsAggregate("sixByte"), new UserCountWindowResult5())
+//                        .print()
+                        .addSink(getKafkaSink("TOP-USER")).setParallelism(3);
+
+
+                //common_app_label聚合求全量
+                SingleOutputStreamOperator<Entity> appNameStream2 = inputForSession.filter(new FilterFunction<Entity>() {
+                    @Override
+                    public boolean filter(Entity value) throws Exception {
+                        return StringUtil.isNotEmpty(value.getCommon_app_label());
+                    }
+                }).assignTimestampsAndWatermarks(strategyForSession);
+
+
+                appNameStream2.windowAll(TumblingEventTimeWindows.of(Time.minutes(WINDOW_TIME_MINUTE)))
+                        .aggregate(new DatasketchForMetricsAggregate("sevenSession"), new UserCountWindowResult5())
+//                        .print()
+                        .addSink(getKafkaSink("TRAFFIC-APP-STAT")).setParallelism(TASK_PARALLELISM);
+
+                appNameStream2.windowAll(TumblingEventTimeWindows.of(Time.minutes(WINDOW_TIME_MINUTE)))
+                        .aggregate(new DatasketchForMetricsAggregate("sevenPkt"), new UserCountWindowResult5())
+//                        .print()
+                        .addSink(getKafkaSink("TRAFFIC-APP-STAT")).setParallelism(TASK_PARALLELISM);
+
+                appNameStream2.windowAll(TumblingEventTimeWindows.of(Time.minutes(WINDOW_TIME_MINUTE)))
+                        .aggregate(new DatasketchForMetricsAggregate("sevenByte"), new UserCountWindowResult5())
+//                        .print()
+                        .addSink(getKafkaSink("TRAFFIC-APP-STAT")).setParallelism(TASK_PARALLELISM);
 
 
 
@@ -256,9 +420,11 @@ public class Toptask {
                 }).assignTimestampsAndWatermarks(strategyForSecurity);
 
 
-                AllWindowedStream<UrlEntity, TimeWindow> urlEntityTimeWindowAllWindowedStream = UrlStream2.windowAll(TumblingEventTimeWindows.of(Time.minutes(WINDOW_TIME_MINUTE)));
-                SingleOutputStreamOperator<String> aggregate1 = urlEntityTimeWindowAllWindowedStream.aggregate(new UserHashMapCountAgg6(), new UserCountWindowResult5());
-                aggregate1.print();
+                UrlStream2.windowAll(TumblingEventTimeWindows.of(Time.minutes(WINDOW_TIME_MINUTE)))
+                        .aggregate(new DatasketchForUrlAggregate(), new UserCountWindowResult5())
+//                        .print()
+                        .addSink(getKafkaSink("TOP-URLS")).setParallelism(3);
+
 
 
 
