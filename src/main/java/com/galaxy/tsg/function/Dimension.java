@@ -12,69 +12,116 @@ import com.galaxy.tsg.pojo.UrlEntity;
  */
 public class Dimension {
 
-    public static final String ONE = "common_client_ip,common_vsys_id,common_device_group,common_data_center";
-    public static final String TWO = "common_server_ip,common_vsys_id,common_device_group,common_data_center";
-    public static final String THREE = "common_internal_ip,common_vsys_id,common_device_group,common_data_center";
-    public static final String FOUR = "common_external_ip,common_vsys_id,common_device_group,common_data_center";
-    public static final String FIVE = "http_domain,common_vsys_id,common_device_group,common_data_center";
-    public static final String SIX = "common_subscriber_id,common_vsys_id,common_device_group,common_data_center";
-    public static final String SEVEN = "common_app_label,common_vsys_id,common_device_group,common_data_center";
+    public static final String CLIENTIP = "common_client_ip,common_vsys_id,common_device_group,common_data_center";
+    public static final String SERVERIP = "common_server_ip,common_vsys_id,common_device_group,common_data_center";
+    public static final String INTERNALIP = "common_internal_ip,common_vsys_id,common_device_group,common_data_center";
+    public static final String EXTERNALIP = "common_external_ip,common_vsys_id,common_device_group,common_data_center";
+    public static final String DOMAIN = "http_domain,common_vsys_id,common_device_group,common_data_center";
+    public static final String SUBSCRIBERID = "common_subscriber_id,common_vsys_id,common_device_group,common_data_center";
+    public static final String APPLABEL = "common_app_label,common_vsys_id,common_device_group,common_data_center";
 
-    public static final String EIGHT = "http_url,common_vsys_id";
+    public static final String URL = "http_url,common_vsys_id";
 
 
 
-    public static String setOneDimension(Entity cnRecordLog){
+    public static String setClientIpDimension(Entity entity){
 
-        String oneDimension = cnRecordLog.getCommon_client_ip()+","+cnRecordLog.getCommon_vsys_id()+","+cnRecordLog.getCommon_device_group()+","+cnRecordLog.getCommon_data_center();
-        return oneDimension;
+        String clientIpDimension = entity.getCommon_client_ip()+","+entity.getCommon_vsys_id()+","+entity.getCommon_device_group()+","+entity.getCommon_data_center();
+        return clientIpDimension;
     }
 
 
-    public static String setTwoDimension(Entity cnRecordLog){
+    public static String setServerIpDimension(Entity entity){
 
-        String twoDimension = cnRecordLog.getCommon_server_ip()+","+cnRecordLog.getCommon_vsys_id()+","+cnRecordLog.getCommon_device_group()+","+cnRecordLog.getCommon_data_center();
-        return twoDimension;
+        String serverIpDimension = entity.getCommon_server_ip()+","+entity.getCommon_vsys_id()+","+entity.getCommon_device_group()+","+entity.getCommon_data_center();
+        return serverIpDimension;
     }
 
 
-    public static String setThreeDimension(Entity cnRecordLog){
+    public static String setInternalIpDimension(Entity entity){
 
-        String threeDimension = cnRecordLog.getCommon_internal_ip()+","+cnRecordLog.getCommon_vsys_id()+","+cnRecordLog.getCommon_device_group()+","+cnRecordLog.getCommon_data_center();
-        return threeDimension;
+        String internalIpDimension = entity.getCommon_internal_ip()+","+entity.getCommon_vsys_id()+","+entity.getCommon_device_group()+","+entity.getCommon_data_center();
+        return internalIpDimension;
     }
 
 
-    public static String setFourDimension(Entity cnRecordLog){
+    public static String setExternalIpDimension(Entity entity){
 
-        String fourDimension = cnRecordLog.getCommon_external_ip()+","+cnRecordLog.getCommon_vsys_id()+","+cnRecordLog.getCommon_device_group()+","+cnRecordLog.getCommon_data_center();
-        return fourDimension;
+        String externalIpDimension = entity.getCommon_external_ip()+","+entity.getCommon_vsys_id()+","+entity.getCommon_device_group()+","+entity.getCommon_data_center();
+        return externalIpDimension;
     }
 
-    public static String setFiveDimension(Entity cnRecordLog){
+    public static String setDomainDimension(Entity entity){
 
-        String fiveDimension = cnRecordLog.getHttp_domain()+","+cnRecordLog.getCommon_vsys_id()+","+cnRecordLog.getCommon_device_group()+","+cnRecordLog.getCommon_data_center();
-        return fiveDimension;
-    }
-
-
-    public static String setSixDimension(Entity cnRecordLog){
-
-        String sixDimension = cnRecordLog.getCommon_subscriber_id()+","+cnRecordLog.getCommon_vsys_id()+","+cnRecordLog.getCommon_device_group()+","+cnRecordLog.getCommon_data_center();
-        return sixDimension;
+        String domainDimension = entity.getHttp_domain()+","+entity.getCommon_vsys_id()+","+entity.getCommon_device_group()+","+entity.getCommon_data_center();
+        return domainDimension;
     }
 
 
-    public static String setSevenDimension(Entity cnRecordLog){
+    public static String setSubscriberIdDimension(Entity entity){
 
-        String sevenDimension = cnRecordLog.getCommon_app_label()+","+cnRecordLog.getCommon_vsys_id()+","+cnRecordLog.getCommon_device_group()+","+cnRecordLog.getCommon_data_center();
-        return sevenDimension;
+        String subscriberIdDimension = entity.getCommon_subscriber_id()+","+entity.getCommon_vsys_id()+","+entity.getCommon_device_group()+","+entity.getCommon_data_center();
+        return subscriberIdDimension;
     }
 
-    public static String setEightDimension(UrlEntity cnRecordLog){
 
-        String eightDimension = cnRecordLog.getHttp_url()+","+cnRecordLog.getCommon_vsys_id();
-        return eightDimension;
+    public static String setAppLabelDimension(Entity entity){
+
+        String appLabelDimension = entity.getCommon_app_label()+","+entity.getCommon_vsys_id()+","+entity.getCommon_device_group()+","+entity.getCommon_data_center();
+        return appLabelDimension;
     }
+
+    public static String setUrlDimension(UrlEntity entity){
+
+        String urlDimension = entity.getHttp_url()+","+entity.getCommon_vsys_id();
+        return urlDimension;
+    }
+
+
+
+    public static String setDimension(Entity entity,String key){
+
+        String dimension = "";
+
+        switch (key) {
+            case "common_client_ip":
+                dimension = setClientIpDimension(entity);
+                break;
+            case "common_server_ip":
+                dimension = setServerIpDimension(entity);
+                break;
+            case "common_internal_ip":
+                dimension = setInternalIpDimension(entity);
+                break;
+            case "common_external_ip":
+                dimension = setExternalIpDimension(entity);
+                break;
+            case "http_domain":
+                dimension = setDomainDimension(entity);
+                break;
+
+            case "common_subscriber_id":
+                dimension = setSubscriberIdDimension(entity);
+                break;
+
+            case "common_app_label":
+                dimension = setAppLabelDimension(entity);
+                break;
+
+            default:
+
+        }
+
+
+
+
+        return dimension;
+    }
+
+
+
+
+
+
 
 }

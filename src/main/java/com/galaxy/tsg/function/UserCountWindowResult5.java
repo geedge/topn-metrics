@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import static com.galaxy.tsg.config.commonConfig.TOP_LIMIT;
+
 /**
  * @author fy
  * @version 1.0
@@ -23,41 +25,43 @@ public class UserCountWindowResult5 extends ProcessAllWindowFunction<HashMap<Str
 
     @Override
     public void process(Context context, Iterable<HashMap<String, DimensionItemsSketch>> iterable, Collector<String> collector) throws Exception {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("-------------------------\n");
-        stringBuilder.append("datasketches方法窗口结束时间:" + new Timestamp(context.window().getEnd()) + "\n");
+//        StringBuilder stringBuilder = new StringBuilder();
+//        stringBuilder.append("-------------------------\n");
+//        stringBuilder.append("datasketches方法窗口结束时间:" + new Timestamp(context.window().getEnd()) + "\n");
 
 
         HashMap<String, DimensionItemsSketch> dataHashMap = iterable.iterator().next();
 
 
-        System.out.println(dataHashMap.toString());
+//        System.out.println(dataHashMap.toString());
 
         Set<Map.Entry<String, DimensionItemsSketch>> entries = dataHashMap.entrySet();
 
 
         for(Map.Entry<String, DimensionItemsSketch> entry:entries){
 
-            System.out.println(entry.getKey()+"");
-            stringBuilder.append(entry.getKey()+"\n");
+//            System.out.println(entry.getKey()+"");
+//            stringBuilder.append(entry.getKey()+"\n");
 
             ItemsSketch.Row<String>[] items = entry.getValue().getItemsSketch().getFrequentItems(ErrorType.NO_FALSE_POSITIVES);
 
             for (int i=0;i<items.length;i++){
 
 
-                String resultStr = "No." + (i + 1) + " "
-                        + "ip:" + items[i].getItem() + " "
-                        + " Est:" + items[i].getEstimate()
-                        + " UB:" + items[i].getUpperBound()
-                        + " LB:" + items[i].getLowerBound();
+//                String resultStr = "No." + (i + 1) + " "
+//                        + "ip:" + items[i].getItem() + " "
+//                        + " Est:" + items[i].getEstimate()
+//                        + " UB:" + items[i].getUpperBound()
+//                        + " LB:" + items[i].getLowerBound();
 
                 String jsonStr = "";
-                if(!entry.getKey().equals("eightSession")){
+                if(!entry.getKey().equals("urlSession")){
                 CollectionValue collectionValue = entry.getValue().getStringCollectionValueHashMap().get(items[i].getItem());
+                    collectionValue.setStat_time(context.window().getEnd()/1000);
                 jsonStr = JSONObject.toJSONString(collectionValue);
             }else {
                     TopUrlEntity topUrlEntity = entry.getValue().getStringTopUrlEntityHashMap().get(items[i].getItem());
+                    topUrlEntity.setStat_time(context.window().getEnd()/1000);
                     jsonStr = JSONObject.toJSONString(topUrlEntity);
                 }
 
@@ -65,12 +69,12 @@ public class UserCountWindowResult5 extends ProcessAllWindowFunction<HashMap<Str
                 collector.collect(jsonStr);
 
 //                String item = items[i].toString();
-                stringBuilder.append(resultStr);
+//                stringBuilder.append(resultStr);
 
-                stringBuilder.append("\n");
+//                stringBuilder.append("\n");
 
 
-                if (i==1000)
+                if (i==TOP_LIMIT)//够条数就结束
                     break;
 
             }

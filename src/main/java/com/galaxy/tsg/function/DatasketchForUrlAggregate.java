@@ -24,56 +24,56 @@ public class DatasketchForUrlAggregate implements AggregateFunction<UrlEntity, H
     }
 
     @Override
-    public HashMap<String, DimensionItemsSketch> add(UrlEntity cnRecordLog, HashMap<String, DimensionItemsSketch> stringItemsSketchHashMap) {
+    public HashMap<String, DimensionItemsSketch> add(UrlEntity urlEntity, HashMap<String, DimensionItemsSketch> stringItemsSketchHashMap) {
 
 //        String dimension = cnRecordLog.getCommon_client_ip();//维度
 //        System.out.println(dimension);
 
         if(stringItemsSketchHashMap.isEmpty()) {
 
-            ItemsSketch<String> eightSessionItemsSketch = new ItemsSketch<>(1048576);//新建
+            ItemsSketch<String> urlSessionItemsSketch = new ItemsSketch<>(1048576);//新建
 
-            eightSessionItemsSketch.update(Dimension.setEightDimension(cnRecordLog),cnRecordLog.getCommon_sessions());
+            urlSessionItemsSketch.update(Dimension.setUrlDimension(urlEntity),urlEntity.getCommon_sessions());
 
 
             TopUrlEntity topUrlEntity = new TopUrlEntity();
-            topUrlEntity.setSession_num(cnRecordLog.getCommon_sessions());
+            topUrlEntity.setSession_num(urlEntity.getCommon_sessions());
             topUrlEntity.setStat_time(System.currentTimeMillis() / 1000);
-            topUrlEntity.setUrl(cnRecordLog.getHttp_url());
-            topUrlEntity.setVsys_id(cnRecordLog.getCommon_vsys_id());
+            topUrlEntity.setUrl(urlEntity.getHttp_url());
+            topUrlEntity.setVsys_id(urlEntity.getCommon_vsys_id());
             HashMap<String,TopUrlEntity> stringTopUrlEntityHashMap = new HashMap<>();
-            stringTopUrlEntityHashMap.put(Dimension.setEightDimension(cnRecordLog),topUrlEntity);
+            stringTopUrlEntityHashMap.put(Dimension.setUrlDimension(urlEntity),topUrlEntity);
 
 
-            DimensionItemsSketch eightSessionDimensionItemsSketch = new DimensionItemsSketch(stringTopUrlEntityHashMap,Dimension.EIGHT,eightSessionItemsSketch);
+            DimensionItemsSketch urlSessionDimensionItemsSketch = new DimensionItemsSketch(stringTopUrlEntityHashMap,Dimension.URL,urlSessionItemsSketch);
 
-            stringItemsSketchHashMap.put("eightSession", eightSessionDimensionItemsSketch);
+            stringItemsSketchHashMap.put("urlSession", urlSessionDimensionItemsSketch);
 
 
         }else {
 
 
-            stringItemsSketchHashMap.get("eightSession").getItemsSketch().update(Dimension.setEightDimension(cnRecordLog),cnRecordLog.getCommon_sessions());
+            stringItemsSketchHashMap.get("urlSession").getItemsSketch().update(Dimension.setUrlDimension(urlEntity),urlEntity.getCommon_sessions());
 
-            TopUrlEntity eightSession = stringItemsSketchHashMap.get("eightSession").getStringTopUrlEntityHashMap().get(Dimension.setEightDimension(cnRecordLog));//从key获取集合
+            TopUrlEntity urlSession = stringItemsSketchHashMap.get("urlSession").getStringTopUrlEntityHashMap().get(Dimension.setUrlDimension(urlEntity));//从key获取集合
 
-            if (eightSession==null){
+            if (urlSession==null){
 
                 TopUrlEntity topUrlEntity = new TopUrlEntity();
-                topUrlEntity.setSession_num(cnRecordLog.getCommon_sessions());
+                topUrlEntity.setSession_num(urlEntity.getCommon_sessions());
                 topUrlEntity.setStat_time(System.currentTimeMillis() / 1000);
-                topUrlEntity.setUrl(cnRecordLog.getHttp_url());
-                topUrlEntity.setVsys_id(cnRecordLog.getCommon_vsys_id());
+                topUrlEntity.setUrl(urlEntity.getHttp_url());
+                topUrlEntity.setVsys_id(urlEntity.getCommon_vsys_id());
 
-                stringItemsSketchHashMap.get("eightSession").getStringTopUrlEntityHashMap().put(Dimension.setEightDimension(cnRecordLog),eightSession);
+                stringItemsSketchHashMap.get("urlSession").getStringTopUrlEntityHashMap().put(Dimension.setUrlDimension(urlEntity),urlSession);
 
             }else {//做加和
 
 
-                eightSession.setSession_num(eightSession.getSession_num()+cnRecordLog.getCommon_sessions());
+                urlSession.setSession_num(urlSession.getSession_num()+urlEntity.getCommon_sessions());
 
 
-                stringItemsSketchHashMap.get("eightSession").getStringTopUrlEntityHashMap().put(Dimension.setEightDimension(cnRecordLog),eightSession);
+                stringItemsSketchHashMap.get("urlSession").getStringTopUrlEntityHashMap().put(Dimension.setUrlDimension(urlEntity),urlSession);
 
 
             }

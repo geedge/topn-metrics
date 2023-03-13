@@ -31,48 +31,48 @@ public class DatasketchForMetricsAggregate implements AggregateFunction<Entity, 
     }
 
     @Override
-    public HashMap<String, DimensionItemsSketch> add(Entity cnRecordLog, HashMap<String, DimensionItemsSketch> stringItemsSketchHashMap) {
+    public HashMap<String, DimensionItemsSketch> add(Entity entity, HashMap<String, DimensionItemsSketch> stringItemsSketchHashMap) {
 
 //        String dimension = cnRecordLog.getCommon_client_ip();//维度
 //        System.out.println(dimension);
 
         switch (key){
-            case "oneSession":
+            case "clientIpSession":
                 if(stringItemsSketchHashMap.isEmpty()) {
 
-                    ItemsSketch<String> oneSessionItemsSketch = new ItemsSketch<>(1048576);//新建
+                    ItemsSketch<String> clientIpSessionItemsSketch = new ItemsSketch<>(1048576);//新建
 
-                    oneSessionItemsSketch.update(Dimension.setOneDimension(cnRecordLog),cnRecordLog.getCommon_sessions());
+                    clientIpSessionItemsSketch.update(Dimension.setClientIpDimension(entity),entity.getCommon_sessions());
 
-                    CollectionValue collectionValue = new CollectionValue(cnRecordLog,"sessions");
-                    collectionValue.setSource(cnRecordLog.getCommon_client_ip());
+                    CollectionValue collectionValue = new CollectionValue(entity,"sessions");
+                    collectionValue.setSource(entity.getCommon_client_ip());
                     HashMap<String, CollectionValue> stringCollectionValueHashMap = new HashMap<>();
-                    stringCollectionValueHashMap.put(Dimension.setOneDimension(cnRecordLog),collectionValue);
+                    stringCollectionValueHashMap.put(Dimension.setClientIpDimension(entity),collectionValue);
 
-                    DimensionItemsSketch oneSessionDimensionItemsSketch = new DimensionItemsSketch(Dimension.ONE, oneSessionItemsSketch,stringCollectionValueHashMap);
+                    DimensionItemsSketch clientIpSessionDimensionItemsSketch = new DimensionItemsSketch(Dimension.CLIENTIP, clientIpSessionItemsSketch,stringCollectionValueHashMap);
 
 
-                    stringItemsSketchHashMap.put("oneSession", oneSessionDimensionItemsSketch);
+                    stringItemsSketchHashMap.put("clientIpSession", clientIpSessionDimensionItemsSketch);
 
 
                 }else {
 
-                    stringItemsSketchHashMap.get("oneSession").getItemsSketch().update(Dimension.setOneDimension(cnRecordLog),cnRecordLog.getCommon_sessions());
+                    stringItemsSketchHashMap.get("clientIpSession").getItemsSketch().update(Dimension.setClientIpDimension(entity),entity.getCommon_sessions());
 
-                    CollectionValue oneSession = stringItemsSketchHashMap.get("oneSession").getStringCollectionValueHashMap().get(Dimension.setOneDimension(cnRecordLog));//从key获取集合
+                    CollectionValue clientIpSession = stringItemsSketchHashMap.get("clientIpSession").getStringCollectionValueHashMap().get(Dimension.setClientIpDimension(entity));//从key获取集合
 
-                    if (oneSession==null){
+                    if (clientIpSession==null){
 
-                        CollectionValue collectionValue = new CollectionValue(cnRecordLog,"sessions");
-                        collectionValue.setSource(cnRecordLog.getCommon_client_ip());
+                        CollectionValue collectionValue = new CollectionValue(entity,"sessions");
+                        collectionValue.setSource(entity.getCommon_client_ip());
 
-                        stringItemsSketchHashMap.get("oneSession").getStringCollectionValueHashMap().put(Dimension.setOneDimension(cnRecordLog),collectionValue);
+                        stringItemsSketchHashMap.get("clientIpSession").getStringCollectionValueHashMap().put(Dimension.setClientIpDimension(entity),collectionValue);
 
                     }else {//做加和
 
-                        oneSession.getCollectionValue(oneSession,cnRecordLog);
+                        clientIpSession.getCollectionValue(clientIpSession,entity);
 
-                        stringItemsSketchHashMap.get("oneSession").getStringCollectionValueHashMap().put(Dimension.setOneDimension(cnRecordLog),oneSession);
+                        stringItemsSketchHashMap.get("clientIpSession").getStringCollectionValueHashMap().put(Dimension.setClientIpDimension(entity),clientIpSession);
 
 
                     }
@@ -81,92 +81,43 @@ public class DatasketchForMetricsAggregate implements AggregateFunction<Entity, 
                 }
 
                 break;
-            case "twoSession":
+            case "serverIpSession":
                 if(stringItemsSketchHashMap.isEmpty()) {
 
-                    ItemsSketch<String> twoSessionItemsSketch = new ItemsSketch<>(1048576);//新建
+                    ItemsSketch<String> serverIpSessionItemsSketch = new ItemsSketch<>(1048576);//新建
 
-                    twoSessionItemsSketch.update(Dimension.setTwoDimension(cnRecordLog),cnRecordLog.getCommon_sessions());
+                    serverIpSessionItemsSketch.update(Dimension.setServerIpDimension(entity),entity.getCommon_sessions());
 
-                    CollectionValue collectionValue = new CollectionValue(cnRecordLog,"sessions");
-                    collectionValue.setSource(cnRecordLog.getCommon_server_ip());
+                    CollectionValue collectionValue = new CollectionValue(entity,"sessions");
+                    collectionValue.setSource(entity.getCommon_server_ip());
                     HashMap<String, CollectionValue> stringCollectionValueHashMap = new HashMap<>();
-                    stringCollectionValueHashMap.put(Dimension.setTwoDimension(cnRecordLog),collectionValue);
+                    stringCollectionValueHashMap.put(Dimension.setServerIpDimension(entity),collectionValue);
 
 
-                    DimensionItemsSketch twoSessionDimensionItemsSketch = new DimensionItemsSketch(Dimension.TWO,twoSessionItemsSketch,stringCollectionValueHashMap);
+                    DimensionItemsSketch serverIpSessionDimensionItemsSketch = new DimensionItemsSketch(Dimension.SERVERIP,serverIpSessionItemsSketch,stringCollectionValueHashMap);
 
-                    stringItemsSketchHashMap.put("twoSession", twoSessionDimensionItemsSketch);
+                    stringItemsSketchHashMap.put("serverIpSession", serverIpSessionDimensionItemsSketch);
 
 
                 }else {
 
-                    stringItemsSketchHashMap.get("twoSession").getItemsSketch().update(Dimension.setTwoDimension(cnRecordLog),cnRecordLog.getCommon_sessions());
+                    stringItemsSketchHashMap.get("serverIpSession").getItemsSketch().update(Dimension.setServerIpDimension(entity),entity.getCommon_sessions());
 
-                    CollectionValue twoSession = stringItemsSketchHashMap.get("twoSession").getStringCollectionValueHashMap().get(Dimension.setTwoDimension(cnRecordLog));
-
-
-                    if (twoSession==null){
-
-                        CollectionValue collectionValue = new CollectionValue(cnRecordLog,"sessions");
-                        collectionValue.setSource(cnRecordLog.getCommon_server_ip());
-
-                        stringItemsSketchHashMap.get("twoSession").getStringCollectionValueHashMap().put(Dimension.setTwoDimension(cnRecordLog),collectionValue);
-
-                    }else {//做加和
-
-                        twoSession.getCollectionValue(twoSession,cnRecordLog);
-
-                        stringItemsSketchHashMap.get("twoSession").getStringCollectionValueHashMap().put(Dimension.setTwoDimension(cnRecordLog),twoSession);
+                    CollectionValue serverIpSession = stringItemsSketchHashMap.get("serverIpSession").getStringCollectionValueHashMap().get(Dimension.setServerIpDimension(entity));
 
 
-                    }
+                    if (serverIpSession==null){
 
+                        CollectionValue collectionValue = new CollectionValue(entity,"sessions");
+                        collectionValue.setSource(entity.getCommon_server_ip());
 
-
-
-
-                }
-                break;
-            case "threeSession":
-                if(stringItemsSketchHashMap.isEmpty()) {
-
-                    ItemsSketch<String> threeSessionItemsSketch = new ItemsSketch<>(1048576);//新建
-
-                    threeSessionItemsSketch.update(Dimension.setThreeDimension(cnRecordLog),cnRecordLog.getCommon_sessions());
-
-                    CollectionValue collectionValue = new CollectionValue(cnRecordLog,"sessions");
-                    collectionValue.setSource(cnRecordLog.getCommon_internal_ip());
-                    HashMap<String, CollectionValue> stringCollectionValueHashMap = new HashMap<>();
-                    stringCollectionValueHashMap.put(Dimension.setThreeDimension(cnRecordLog),collectionValue);
-
-
-
-                    DimensionItemsSketch threeSessionDimensionItemsSketch = new DimensionItemsSketch(Dimension.THREE,threeSessionItemsSketch,stringCollectionValueHashMap);
-
-
-                    stringItemsSketchHashMap.put("threeSession", threeSessionDimensionItemsSketch);
-
-                }else {
-
-                    stringItemsSketchHashMap.get("threeSession").getItemsSketch().update(Dimension.setThreeDimension(cnRecordLog),cnRecordLog.getCommon_sessions());
-
-
-                    CollectionValue threeSession = stringItemsSketchHashMap.get("threeSession").getStringCollectionValueHashMap().get(Dimension.setThreeDimension(cnRecordLog));
-
-
-                    if (threeSession==null){
-
-                        CollectionValue collectionValue = new CollectionValue(cnRecordLog,"sessions");
-                        collectionValue.setSource(cnRecordLog.getCommon_server_ip());
-
-                        stringItemsSketchHashMap.get("threeSession").getStringCollectionValueHashMap().put(Dimension.setThreeDimension(cnRecordLog),collectionValue);
+                        stringItemsSketchHashMap.get("serverIpSession").getStringCollectionValueHashMap().put(Dimension.setServerIpDimension(entity),collectionValue);
 
                     }else {//做加和
 
-                        threeSession.getCollectionValue(threeSession,cnRecordLog);
+                        serverIpSession.getCollectionValue(serverIpSession,entity);
 
-                        stringItemsSketchHashMap.get("threeSession").getStringCollectionValueHashMap().put(Dimension.setThreeDimension(cnRecordLog),threeSession);
+                        stringItemsSketchHashMap.get("serverIpSession").getStringCollectionValueHashMap().put(Dimension.setServerIpDimension(entity),serverIpSession);
 
 
                     }
@@ -177,47 +128,45 @@ public class DatasketchForMetricsAggregate implements AggregateFunction<Entity, 
 
                 }
                 break;
-            case "fourSession":
-
+            case "internalIpSession":
                 if(stringItemsSketchHashMap.isEmpty()) {
 
-                    ItemsSketch<String> fourSessionItemsSketch = new ItemsSketch<>(1048576);//新建
+                    ItemsSketch<String> internalIpSessionItemsSketch = new ItemsSketch<>(1048576);//新建
 
-                    fourSessionItemsSketch.update(Dimension.setFourDimension(cnRecordLog),cnRecordLog.getCommon_sessions());
+                    internalIpSessionItemsSketch.update(Dimension.setInternalIpDimension(entity),entity.getCommon_sessions());
 
-
-                    CollectionValue collectionValue = new CollectionValue(cnRecordLog,"sessions");
-                    collectionValue.setSource(cnRecordLog.getCommon_external_ip());
+                    CollectionValue collectionValue = new CollectionValue(entity,"sessions");
+                    collectionValue.setSource(entity.getCommon_internal_ip());
                     HashMap<String, CollectionValue> stringCollectionValueHashMap = new HashMap<>();
-                    stringCollectionValueHashMap.put(Dimension.setFourDimension(cnRecordLog),collectionValue);
+                    stringCollectionValueHashMap.put(Dimension.setInternalIpDimension(entity),collectionValue);
 
 
-                    DimensionItemsSketch fourSessionDimensionItemsSketch = new DimensionItemsSketch(Dimension.FOUR,fourSessionItemsSketch,stringCollectionValueHashMap);
 
-                    stringItemsSketchHashMap.put("fourSession", fourSessionDimensionItemsSketch);
+                    DimensionItemsSketch internalIpSessionDimensionItemsSketch = new DimensionItemsSketch(Dimension.INTERNALIP,internalIpSessionItemsSketch,stringCollectionValueHashMap);
 
+
+                    stringItemsSketchHashMap.put("internalIpSession", internalIpSessionDimensionItemsSketch);
 
                 }else {
 
-                    stringItemsSketchHashMap.get("fourSession").getItemsSketch().update(Dimension.setFourDimension(cnRecordLog),cnRecordLog.getCommon_sessions());
+                    stringItemsSketchHashMap.get("internalIpSession").getItemsSketch().update(Dimension.setInternalIpDimension(entity),entity.getCommon_sessions());
 
 
+                    CollectionValue internalIpSession = stringItemsSketchHashMap.get("internalIpSession").getStringCollectionValueHashMap().get(Dimension.setInternalIpDimension(entity));
 
-                    CollectionValue fourSession = stringItemsSketchHashMap.get("fourSession").getStringCollectionValueHashMap().get(Dimension.setFourDimension(cnRecordLog));
 
+                    if (internalIpSession==null){
 
-                    if (fourSession==null){
+                        CollectionValue collectionValue = new CollectionValue(entity,"sessions");
+                        collectionValue.setSource(entity.getCommon_server_ip());
 
-                        CollectionValue collectionValue = new CollectionValue(cnRecordLog,"sessions");
-                        collectionValue.setSource(cnRecordLog.getCommon_external_ip());
-
-                        stringItemsSketchHashMap.get("fourSession").getStringCollectionValueHashMap().put(Dimension.setFourDimension(cnRecordLog),collectionValue);
+                        stringItemsSketchHashMap.get("internalIpSession").getStringCollectionValueHashMap().put(Dimension.setInternalIpDimension(entity),collectionValue);
 
                     }else {//做加和
 
-                        fourSession.getCollectionValue(fourSession,cnRecordLog);
+                        internalIpSession.getCollectionValue(internalIpSession,entity);
 
-                        stringItemsSketchHashMap.get("fourSession").getStringCollectionValueHashMap().put(Dimension.setFourDimension(cnRecordLog),fourSession);
+                        stringItemsSketchHashMap.get("internalIpSession").getStringCollectionValueHashMap().put(Dimension.setInternalIpDimension(entity),internalIpSession);
 
 
                     }
@@ -228,293 +177,47 @@ public class DatasketchForMetricsAggregate implements AggregateFunction<Entity, 
 
                 }
                 break;
-            case "fiveSession":
+            case "externalIpSession":
+
                 if(stringItemsSketchHashMap.isEmpty()) {
 
-                    ItemsSketch<String> fiveSessionItemsSketch = new ItemsSketch<>(1048576);//新建
+                    ItemsSketch<String> externalIpSessionItemsSketch = new ItemsSketch<>(1048576);//新建
 
-                    fiveSessionItemsSketch.update(Dimension.setFiveDimension(cnRecordLog),cnRecordLog.getCommon_sessions());
+                    externalIpSessionItemsSketch.update(Dimension.setExternalIpDimension(entity),entity.getCommon_sessions());
 
 
-                    CollectionValue collectionValue = new CollectionValue(cnRecordLog,"sessions");
-                    collectionValue.setSource(cnRecordLog.getHttp_domain());
+                    CollectionValue collectionValue = new CollectionValue(entity,"sessions");
+                    collectionValue.setSource(entity.getCommon_external_ip());
                     HashMap<String, CollectionValue> stringCollectionValueHashMap = new HashMap<>();
-                    stringCollectionValueHashMap.put(Dimension.setFiveDimension(cnRecordLog),collectionValue);
+                    stringCollectionValueHashMap.put(Dimension.setExternalIpDimension(entity),collectionValue);
 
 
+                    DimensionItemsSketch externalIpSessionDimensionItemsSketch = new DimensionItemsSketch(Dimension.EXTERNALIP,externalIpSessionItemsSketch,stringCollectionValueHashMap);
 
-
-                    DimensionItemsSketch fiveSessionDimensionItemsSketch = new DimensionItemsSketch(Dimension.FIVE,fiveSessionItemsSketch,stringCollectionValueHashMap);
-
-
-                    stringItemsSketchHashMap.put("fiveSession", fiveSessionDimensionItemsSketch);
+                    stringItemsSketchHashMap.put("externalIpSession", externalIpSessionDimensionItemsSketch);
 
 
                 }else {
 
-                    stringItemsSketchHashMap.get("fiveSession").getItemsSketch().update(Dimension.setFiveDimension(cnRecordLog),cnRecordLog.getCommon_sessions());
-
-
-                    CollectionValue fiveSession = stringItemsSketchHashMap.get("fiveSession").getStringCollectionValueHashMap().get(Dimension.setFiveDimension(cnRecordLog));
-
-
-                    if (fiveSession==null){
-
-                        CollectionValue collectionValue = new CollectionValue(cnRecordLog,"sessions");
-                        collectionValue.setSource(cnRecordLog.getHttp_domain());
-
-                        stringItemsSketchHashMap.get("fiveSession").getStringCollectionValueHashMap().put(Dimension.setFiveDimension(cnRecordLog),collectionValue);
-
-                    }else {//做加和
-
-                        fiveSession.getCollectionValue(fiveSession,cnRecordLog);
-
-                        stringItemsSketchHashMap.get("fiveSession").getStringCollectionValueHashMap().put(Dimension.setFiveDimension(cnRecordLog),fiveSession);
-
-
-                    }
+                    stringItemsSketchHashMap.get("externalIpSession").getItemsSketch().update(Dimension.setExternalIpDimension(entity),entity.getCommon_sessions());
 
 
 
-
-                }
-                break;
-            case "sixSession":
-                if(stringItemsSketchHashMap.isEmpty()) {
-
-                    ItemsSketch<String> sixSessionItemsSketch = new ItemsSketch<>(1048576);//新建
-
-                    sixSessionItemsSketch.update(Dimension.setSixDimension(cnRecordLog),cnRecordLog.getCommon_sessions());
+                    CollectionValue externalIpSession = stringItemsSketchHashMap.get("externalIpSession").getStringCollectionValueHashMap().get(Dimension.setExternalIpDimension(entity));
 
 
-                    CollectionValue collectionValue = new CollectionValue(cnRecordLog,"sessions");
-                    collectionValue.setSource(cnRecordLog.getCommon_subscriber_id());
-                    HashMap<String, CollectionValue> stringCollectionValueHashMap = new HashMap<>();
-                    stringCollectionValueHashMap.put(Dimension.setSixDimension(cnRecordLog),collectionValue);
+                    if (externalIpSession==null){
 
+                        CollectionValue collectionValue = new CollectionValue(entity,"sessions");
+                        collectionValue.setSource(entity.getCommon_external_ip());
 
-
-                    DimensionItemsSketch sixSessionDimensionItemsSketch = new DimensionItemsSketch(Dimension.SIX,sixSessionItemsSketch,stringCollectionValueHashMap);
-
-                    stringItemsSketchHashMap.put("sixSession", sixSessionDimensionItemsSketch);
-
-
-                }else {
-
-                    stringItemsSketchHashMap.get("sixSession").getItemsSketch().update(Dimension.setSixDimension(cnRecordLog),cnRecordLog.getCommon_sessions());
-
-
-                    CollectionValue sixSession = stringItemsSketchHashMap.get("sixSession").getStringCollectionValueHashMap().get(Dimension.setSixDimension(cnRecordLog));
-
-
-                    if (sixSession==null){
-
-                        CollectionValue collectionValue = new CollectionValue(cnRecordLog,"sessions");
-                        collectionValue.setSource(cnRecordLog.getCommon_subscriber_id());
-
-                        stringItemsSketchHashMap.get("sixSession").getStringCollectionValueHashMap().put(Dimension.setSixDimension(cnRecordLog),collectionValue);
+                        stringItemsSketchHashMap.get("externalIpSession").getStringCollectionValueHashMap().put(Dimension.setExternalIpDimension(entity),collectionValue);
 
                     }else {//做加和
 
-                        sixSession.getCollectionValue(sixSession,cnRecordLog);
+                        externalIpSession.getCollectionValue(externalIpSession,entity);
 
-                        stringItemsSketchHashMap.get("sixSession").getStringCollectionValueHashMap().put(Dimension.setSixDimension(cnRecordLog),sixSession);
-
-
-                    }
-
-
-
-
-
-
-
-                }
-                break;
-            case "sevenSession":
-                if(stringItemsSketchHashMap.isEmpty()) {
-
-                    ItemsSketch<String> sevenSessionItemsSketch = new ItemsSketch<>(1048576);//新建
-
-                    sevenSessionItemsSketch.update(Dimension.setSevenDimension(cnRecordLog),cnRecordLog.getCommon_sessions());
-
-                    CollectionValue collectionValue = new CollectionValue(cnRecordLog,"sessions");
-                    collectionValue.setSource(cnRecordLog.getCommon_app_label());
-                    HashMap<String, CollectionValue> stringCollectionValueHashMap = new HashMap<>();
-                    stringCollectionValueHashMap.put(Dimension.setSevenDimension(cnRecordLog),collectionValue);
-
-
-
-
-                    DimensionItemsSketch sevenSessionDimensionItemsSketch = new DimensionItemsSketch(Dimension.SEVEN,sevenSessionItemsSketch,stringCollectionValueHashMap);
-
-                    stringItemsSketchHashMap.put("sevenSession", sevenSessionDimensionItemsSketch);
-
-
-                }else {
-
-                    stringItemsSketchHashMap.get("sevenSession").getItemsSketch().update(Dimension.setSevenDimension(cnRecordLog),cnRecordLog.getCommon_sessions());
-
-
-                    CollectionValue sevenSession = stringItemsSketchHashMap.get("sevenSession").getStringCollectionValueHashMap().get(Dimension.setSevenDimension(cnRecordLog));
-
-
-                    if (sevenSession==null){
-
-                        CollectionValue collectionValue = new CollectionValue(cnRecordLog,"sessions");
-                        collectionValue.setSource(cnRecordLog.getCommon_app_label());
-
-                        stringItemsSketchHashMap.get("sevenSession").getStringCollectionValueHashMap().put(Dimension.setSevenDimension(cnRecordLog),collectionValue);
-
-                    }else {//做加和
-
-                        sevenSession.getCollectionValue(sevenSession,cnRecordLog);
-
-                        stringItemsSketchHashMap.get("sevenSession").getStringCollectionValueHashMap().put(Dimension.setSevenDimension(cnRecordLog),sevenSession);
-
-
-                    }
-
-
-
-
-                }
-                break;
-            case "onePkt":
-                if(stringItemsSketchHashMap.isEmpty()) {
-
-                    ItemsSketch<String> onePktItemsSketch = new ItemsSketch<>(1048576);
-
-                    onePktItemsSketch.update(Dimension.setOneDimension(cnRecordLog),cnRecordLog.getCommon_c2s_pkt_num()+cnRecordLog.getCommon_s2c_pkt_num());
-
-                    CollectionValue collectionValue = new CollectionValue(cnRecordLog,"packets");
-                    collectionValue.setSource(cnRecordLog.getCommon_client_ip());
-                    HashMap<String, CollectionValue> stringCollectionValueHashMap = new HashMap<>();
-                    stringCollectionValueHashMap.put(Dimension.setOneDimension(cnRecordLog),collectionValue);
-
-
-
-                    DimensionItemsSketch onePktDimensionItemsSketch = new DimensionItemsSketch(Dimension.ONE,onePktItemsSketch,stringCollectionValueHashMap);
-
-                    stringItemsSketchHashMap.put("onePkt",onePktDimensionItemsSketch);
-
-
-                }else {
-
-                    stringItemsSketchHashMap.get("onePkt").getItemsSketch().update(Dimension.setOneDimension(cnRecordLog),cnRecordLog.getCommon_c2s_pkt_num()+cnRecordLog.getCommon_s2c_pkt_num());
-
-                    CollectionValue onePkt = stringItemsSketchHashMap.get("onePkt").getStringCollectionValueHashMap().get(Dimension.setOneDimension(cnRecordLog));//从key获取集合
-
-                    if (onePkt==null){
-
-                        CollectionValue collectionValue = new CollectionValue(cnRecordLog,"packets");
-                        collectionValue.setSource(cnRecordLog.getCommon_client_ip());
-
-                        stringItemsSketchHashMap.get("onePkt").getStringCollectionValueHashMap().put(Dimension.setOneDimension(cnRecordLog),collectionValue);
-
-                    }else {//做加和
-
-                        onePkt.getCollectionValue(onePkt,cnRecordLog);
-
-                        stringItemsSketchHashMap.get("onePkt").getStringCollectionValueHashMap().put(Dimension.setOneDimension(cnRecordLog),onePkt);
-
-
-                    }
-
-
-
-
-                }
-                break;
-            case "twoPkt":
-                if(stringItemsSketchHashMap.isEmpty()) {
-
-                    ItemsSketch<String> twoPktItemsSketch = new ItemsSketch<>(1048576);
-
-                    twoPktItemsSketch.update(Dimension.setTwoDimension(cnRecordLog),cnRecordLog.getCommon_c2s_pkt_num()+cnRecordLog.getCommon_s2c_pkt_num());
-
-                    CollectionValue collectionValue = new CollectionValue(cnRecordLog,"packets");
-                    collectionValue.setSource(cnRecordLog.getCommon_server_ip());
-                    HashMap<String, CollectionValue> stringCollectionValueHashMap = new HashMap<>();
-                    stringCollectionValueHashMap.put(Dimension.setTwoDimension(cnRecordLog),collectionValue);
-
-
-
-
-                    DimensionItemsSketch twoPktDimensionItemsSketch = new DimensionItemsSketch(Dimension.TWO,twoPktItemsSketch,stringCollectionValueHashMap);
-
-                    stringItemsSketchHashMap.put("twoPkt",twoPktDimensionItemsSketch);
-
-                }else {
-
-                    stringItemsSketchHashMap.get("twoPkt").getItemsSketch().update(Dimension.setTwoDimension(cnRecordLog),cnRecordLog.getCommon_c2s_pkt_num()+cnRecordLog.getCommon_s2c_pkt_num());
-
-
-                    CollectionValue twoPkt = stringItemsSketchHashMap.get("twoPkt").getStringCollectionValueHashMap().get(Dimension.setTwoDimension(cnRecordLog));
-
-
-                    if (twoPkt==null){
-
-                        CollectionValue collectionValue = new CollectionValue(cnRecordLog,"packets");
-                        collectionValue.setSource(cnRecordLog.getCommon_server_ip());
-
-                        stringItemsSketchHashMap.get("twoPkt").getStringCollectionValueHashMap().put(Dimension.setTwoDimension(cnRecordLog),collectionValue);
-
-                    }else {//做加和
-
-                        twoPkt.getCollectionValue(twoPkt,cnRecordLog);
-
-                        stringItemsSketchHashMap.get("twoPkt").getStringCollectionValueHashMap().put(Dimension.setTwoDimension(cnRecordLog),twoPkt);
-
-
-                    }
-
-
-
-
-                }
-                break;
-            case "threePkt":
-                if(stringItemsSketchHashMap.isEmpty()) {
-
-                    ItemsSketch<String> threePktItemsSketch = new ItemsSketch<>(1048576);
-
-                    threePktItemsSketch.update(Dimension.setThreeDimension(cnRecordLog),cnRecordLog.getCommon_c2s_pkt_num()+cnRecordLog.getCommon_s2c_pkt_num());
-
-                    CollectionValue collectionValue = new CollectionValue(cnRecordLog,"packets");
-                    collectionValue.setSource(cnRecordLog.getCommon_internal_ip());
-                    HashMap<String, CollectionValue> stringCollectionValueHashMap = new HashMap<>();
-                    stringCollectionValueHashMap.put(Dimension.setThreeDimension(cnRecordLog),collectionValue);
-
-
-
-
-
-
-                    DimensionItemsSketch threePktDimensionItemsSketch = new DimensionItemsSketch(Dimension.THREE,threePktItemsSketch,stringCollectionValueHashMap);
-
-                    stringItemsSketchHashMap.put("threePkt",threePktDimensionItemsSketch);
-
-                }else {
-
-                    stringItemsSketchHashMap.get("threePkt").getItemsSketch().update(Dimension.setThreeDimension(cnRecordLog),cnRecordLog.getCommon_c2s_pkt_num()+cnRecordLog.getCommon_s2c_pkt_num());
-
-
-                    CollectionValue threePkt = stringItemsSketchHashMap.get("threePkt").getStringCollectionValueHashMap().get(Dimension.setThreeDimension(cnRecordLog));
-
-
-                    if (threePkt==null){
-
-                        CollectionValue collectionValue = new CollectionValue(cnRecordLog,"packets");
-                        collectionValue.setSource(cnRecordLog.getCommon_server_ip());
-
-                        stringItemsSketchHashMap.get("threePkt").getStringCollectionValueHashMap().put(Dimension.setThreeDimension(cnRecordLog),collectionValue);
-
-                    }else {//做加和
-
-                        threePkt.getCollectionValue(threePkt,cnRecordLog);
-
-                        stringItemsSketchHashMap.get("threePkt").getStringCollectionValueHashMap().put(Dimension.setThreeDimension(cnRecordLog),threePkt);
+                        stringItemsSketchHashMap.get("externalIpSession").getStringCollectionValueHashMap().put(Dimension.setExternalIpDimension(entity),externalIpSession);
 
 
                     }
@@ -525,47 +228,344 @@ public class DatasketchForMetricsAggregate implements AggregateFunction<Entity, 
 
                 }
                 break;
-            case "fourPkt":
+            case "domainSession":
                 if(stringItemsSketchHashMap.isEmpty()) {
 
-                    ItemsSketch<String> fourPktItemsSketch = new ItemsSketch<>(1048576);
+                    ItemsSketch<String> domainSessionItemsSketch = new ItemsSketch<>(1048576);//新建
 
-                    fourPktItemsSketch.update(Dimension.setFourDimension(cnRecordLog),cnRecordLog.getCommon_c2s_pkt_num()+cnRecordLog.getCommon_s2c_pkt_num());
+                    domainSessionItemsSketch.update(Dimension.setDomainDimension(entity),entity.getCommon_sessions());
 
 
-                    CollectionValue collectionValue = new CollectionValue(cnRecordLog,"packets");
-                    collectionValue.setSource(cnRecordLog.getCommon_external_ip());
+                    CollectionValue collectionValue = new CollectionValue(entity,"sessions");
+                    collectionValue.setSource(entity.getHttp_domain());
                     HashMap<String, CollectionValue> stringCollectionValueHashMap = new HashMap<>();
-                    stringCollectionValueHashMap.put(Dimension.setFourDimension(cnRecordLog),collectionValue);
+                    stringCollectionValueHashMap.put(Dimension.setDomainDimension(entity),collectionValue);
 
 
 
-                    DimensionItemsSketch fourPktDimensionItemsSketch = new DimensionItemsSketch(Dimension.FOUR,fourPktItemsSketch,stringCollectionValueHashMap);
 
-                    stringItemsSketchHashMap.put("fourPkt",fourPktDimensionItemsSketch);
+                    DimensionItemsSketch domainSessionDimensionItemsSketch = new DimensionItemsSketch(Dimension.DOMAIN,domainSessionItemsSketch,stringCollectionValueHashMap);
+
+
+                    stringItemsSketchHashMap.put("domainSession", domainSessionDimensionItemsSketch);
 
 
                 }else {
 
-                    stringItemsSketchHashMap.get("fourPkt").getItemsSketch().update(Dimension.setFourDimension(cnRecordLog),cnRecordLog.getCommon_c2s_pkt_num()+cnRecordLog.getCommon_s2c_pkt_num());
+                    stringItemsSketchHashMap.get("domainSession").getItemsSketch().update(Dimension.setDomainDimension(entity),entity.getCommon_sessions());
 
 
+                    CollectionValue domainSession = stringItemsSketchHashMap.get("domainSession").getStringCollectionValueHashMap().get(Dimension.setDomainDimension(entity));
 
-                    CollectionValue fourPkt = stringItemsSketchHashMap.get("fourPkt").getStringCollectionValueHashMap().get(Dimension.setFourDimension(cnRecordLog));
 
+                    if (domainSession==null){
 
-                    if (fourPkt==null){
+                        CollectionValue collectionValue = new CollectionValue(entity,"sessions");
+                        collectionValue.setSource(entity.getHttp_domain());
 
-                        CollectionValue collectionValue = new CollectionValue(cnRecordLog,"packets");
-                        collectionValue.setSource(cnRecordLog.getCommon_external_ip());
-
-                        stringItemsSketchHashMap.get("fourPkt").getStringCollectionValueHashMap().put(Dimension.setFourDimension(cnRecordLog),collectionValue);
+                        stringItemsSketchHashMap.get("domainSession").getStringCollectionValueHashMap().put(Dimension.setDomainDimension(entity),collectionValue);
 
                     }else {//做加和
 
-                        fourPkt.getCollectionValue(fourPkt,cnRecordLog);
+                        domainSession.getCollectionValue(domainSession,entity);
 
-                        stringItemsSketchHashMap.get("fourPkt").getStringCollectionValueHashMap().put(Dimension.setFourDimension(cnRecordLog),fourPkt);
+                        stringItemsSketchHashMap.get("domainSession").getStringCollectionValueHashMap().put(Dimension.setDomainDimension(entity),domainSession);
+
+
+                    }
+
+
+
+
+                }
+                break;
+            case "subscriberIdSession":
+                if(stringItemsSketchHashMap.isEmpty()) {
+
+                    ItemsSketch<String> subscriberIdSessionItemsSketch = new ItemsSketch<>(1048576);//新建
+
+                    subscriberIdSessionItemsSketch.update(Dimension.setSubscriberIdDimension(entity),entity.getCommon_sessions());
+
+
+                    CollectionValue collectionValue = new CollectionValue(entity,"sessions");
+                    collectionValue.setSource(entity.getCommon_subscriber_id());
+                    HashMap<String, CollectionValue> stringCollectionValueHashMap = new HashMap<>();
+                    stringCollectionValueHashMap.put(Dimension.setSubscriberIdDimension(entity),collectionValue);
+
+
+
+                    DimensionItemsSketch subscriberIdSessionDimensionItemsSketch = new DimensionItemsSketch(Dimension.SUBSCRIBERID,subscriberIdSessionItemsSketch,stringCollectionValueHashMap);
+
+                    stringItemsSketchHashMap.put("subscriberIdSession", subscriberIdSessionDimensionItemsSketch);
+
+
+                }else {
+
+                    stringItemsSketchHashMap.get("subscriberIdSession").getItemsSketch().update(Dimension.setSubscriberIdDimension(entity),entity.getCommon_sessions());
+
+
+                    CollectionValue subscriberIdSession = stringItemsSketchHashMap.get("subscriberIdSession").getStringCollectionValueHashMap().get(Dimension.setSubscriberIdDimension(entity));
+
+
+                    if (subscriberIdSession==null){
+
+                        CollectionValue collectionValue = new CollectionValue(entity,"sessions");
+                        collectionValue.setSource(entity.getCommon_subscriber_id());
+
+                        stringItemsSketchHashMap.get("subscriberIdSession").getStringCollectionValueHashMap().put(Dimension.setSubscriberIdDimension(entity),collectionValue);
+
+                    }else {//做加和
+
+                        subscriberIdSession.getCollectionValue(subscriberIdSession,entity);
+
+                        stringItemsSketchHashMap.get("subscriberIdSession").getStringCollectionValueHashMap().put(Dimension.setSubscriberIdDimension(entity),subscriberIdSession);
+
+
+                    }
+
+
+
+
+
+
+
+                }
+                break;
+            case "appLabelSession":
+                if(stringItemsSketchHashMap.isEmpty()) {
+
+                    ItemsSketch<String> appLabelSessionItemsSketch = new ItemsSketch<>(1048576);//新建
+
+                    appLabelSessionItemsSketch.update(Dimension.setAppLabelDimension(entity),entity.getCommon_sessions());
+
+                    CollectionValue collectionValue = new CollectionValue(entity,"sessions");
+                    collectionValue.setSource(entity.getCommon_app_label());
+                    HashMap<String, CollectionValue> stringCollectionValueHashMap = new HashMap<>();
+                    stringCollectionValueHashMap.put(Dimension.setAppLabelDimension(entity),collectionValue);
+
+
+
+
+                    DimensionItemsSketch appLabelSessionDimensionItemsSketch = new DimensionItemsSketch(Dimension.APPLABEL,appLabelSessionItemsSketch,stringCollectionValueHashMap);
+
+                    stringItemsSketchHashMap.put("appLabelSession", appLabelSessionDimensionItemsSketch);
+
+
+                }else {
+
+                    stringItemsSketchHashMap.get("appLabelSession").getItemsSketch().update(Dimension.setAppLabelDimension(entity),entity.getCommon_sessions());
+
+
+                    CollectionValue appLabelSession = stringItemsSketchHashMap.get("appLabelSession").getStringCollectionValueHashMap().get(Dimension.setAppLabelDimension(entity));
+
+
+                    if (appLabelSession==null){
+
+                        CollectionValue collectionValue = new CollectionValue(entity,"sessions");
+                        collectionValue.setSource(entity.getCommon_app_label());
+
+                        stringItemsSketchHashMap.get("appLabelSession").getStringCollectionValueHashMap().put(Dimension.setAppLabelDimension(entity),collectionValue);
+
+                    }else {//做加和
+
+                        appLabelSession.getCollectionValue(appLabelSession,entity);
+
+                        stringItemsSketchHashMap.get("appLabelSession").getStringCollectionValueHashMap().put(Dimension.setAppLabelDimension(entity),appLabelSession);
+
+
+                    }
+
+
+
+
+                }
+                break;
+            case "clientIpPkt":
+                if(stringItemsSketchHashMap.isEmpty()) {
+
+                    ItemsSketch<String> clientIpPktItemsSketch = new ItemsSketch<>(1048576);
+
+                    clientIpPktItemsSketch.update(Dimension.setClientIpDimension(entity),entity.getCommon_c2s_pkt_num()+entity.getCommon_s2c_pkt_num());
+
+                    CollectionValue collectionValue = new CollectionValue(entity,"packets");
+                    collectionValue.setSource(entity.getCommon_client_ip());
+                    HashMap<String, CollectionValue> stringCollectionValueHashMap = new HashMap<>();
+                    stringCollectionValueHashMap.put(Dimension.setClientIpDimension(entity),collectionValue);
+
+
+
+                    DimensionItemsSketch clientIpPktDimensionItemsSketch = new DimensionItemsSketch(Dimension.CLIENTIP,clientIpPktItemsSketch,stringCollectionValueHashMap);
+
+                    stringItemsSketchHashMap.put("clientIpPkt",clientIpPktDimensionItemsSketch);
+
+
+                }else {
+
+                    stringItemsSketchHashMap.get("clientIpPkt").getItemsSketch().update(Dimension.setClientIpDimension(entity),entity.getCommon_c2s_pkt_num()+entity.getCommon_s2c_pkt_num());
+
+                    CollectionValue clientIpPkt = stringItemsSketchHashMap.get("clientIpPkt").getStringCollectionValueHashMap().get(Dimension.setClientIpDimension(entity));//从key获取集合
+
+                    if (clientIpPkt==null){
+
+                        CollectionValue collectionValue = new CollectionValue(entity,"packets");
+                        collectionValue.setSource(entity.getCommon_client_ip());
+
+                        stringItemsSketchHashMap.get("clientIpPkt").getStringCollectionValueHashMap().put(Dimension.setClientIpDimension(entity),collectionValue);
+
+                    }else {//做加和
+
+                        clientIpPkt.getCollectionValue(clientIpPkt,entity);
+
+                        stringItemsSketchHashMap.get("clientIpPkt").getStringCollectionValueHashMap().put(Dimension.setClientIpDimension(entity),clientIpPkt);
+
+
+                    }
+
+
+
+
+                }
+                break;
+            case "serverIpPkt":
+                if(stringItemsSketchHashMap.isEmpty()) {
+
+                    ItemsSketch<String> serverIpPktItemsSketch = new ItemsSketch<>(1048576);
+
+                    serverIpPktItemsSketch.update(Dimension.setServerIpDimension(entity),entity.getCommon_c2s_pkt_num()+entity.getCommon_s2c_pkt_num());
+
+                    CollectionValue collectionValue = new CollectionValue(entity,"packets");
+                    collectionValue.setSource(entity.getCommon_server_ip());
+                    HashMap<String, CollectionValue> stringCollectionValueHashMap = new HashMap<>();
+                    stringCollectionValueHashMap.put(Dimension.setServerIpDimension(entity),collectionValue);
+
+
+
+
+                    DimensionItemsSketch serverIpPktDimensionItemsSketch = new DimensionItemsSketch(Dimension.SERVERIP,serverIpPktItemsSketch,stringCollectionValueHashMap);
+
+                    stringItemsSketchHashMap.put("serverIpPkt",serverIpPktDimensionItemsSketch);
+
+                }else {
+
+                    stringItemsSketchHashMap.get("serverIpPkt").getItemsSketch().update(Dimension.setServerIpDimension(entity),entity.getCommon_c2s_pkt_num()+entity.getCommon_s2c_pkt_num());
+
+
+                    CollectionValue serverIpPkt = stringItemsSketchHashMap.get("serverIpPkt").getStringCollectionValueHashMap().get(Dimension.setServerIpDimension(entity));
+
+
+                    if (serverIpPkt==null){
+
+                        CollectionValue collectionValue = new CollectionValue(entity,"packets");
+                        collectionValue.setSource(entity.getCommon_server_ip());
+
+                        stringItemsSketchHashMap.get("serverIpPkt").getStringCollectionValueHashMap().put(Dimension.setServerIpDimension(entity),collectionValue);
+
+                    }else {//做加和
+
+                        serverIpPkt.getCollectionValue(serverIpPkt,entity);
+
+                        stringItemsSketchHashMap.get("serverIpPkt").getStringCollectionValueHashMap().put(Dimension.setServerIpDimension(entity),serverIpPkt);
+
+
+                    }
+
+
+
+
+                }
+                break;
+            case "internalIpPkt":
+                if(stringItemsSketchHashMap.isEmpty()) {
+
+                    ItemsSketch<String> internalIpPktItemsSketch = new ItemsSketch<>(1048576);
+
+                    internalIpPktItemsSketch.update(Dimension.setInternalIpDimension(entity),entity.getCommon_c2s_pkt_num()+entity.getCommon_s2c_pkt_num());
+
+                    CollectionValue collectionValue = new CollectionValue(entity,"packets");
+                    collectionValue.setSource(entity.getCommon_internal_ip());
+                    HashMap<String, CollectionValue> stringCollectionValueHashMap = new HashMap<>();
+                    stringCollectionValueHashMap.put(Dimension.setInternalIpDimension(entity),collectionValue);
+
+
+
+
+
+
+                    DimensionItemsSketch internalIpPktDimensionItemsSketch = new DimensionItemsSketch(Dimension.INTERNALIP,internalIpPktItemsSketch,stringCollectionValueHashMap);
+
+                    stringItemsSketchHashMap.put("internalIpPkt",internalIpPktDimensionItemsSketch);
+
+                }else {
+
+                    stringItemsSketchHashMap.get("internalIpPkt").getItemsSketch().update(Dimension.setInternalIpDimension(entity),entity.getCommon_c2s_pkt_num()+entity.getCommon_s2c_pkt_num());
+
+
+                    CollectionValue internalIpPkt = stringItemsSketchHashMap.get("internalIpPkt").getStringCollectionValueHashMap().get(Dimension.setInternalIpDimension(entity));
+
+
+                    if (internalIpPkt==null){
+
+                        CollectionValue collectionValue = new CollectionValue(entity,"packets");
+                        collectionValue.setSource(entity.getCommon_server_ip());
+
+                        stringItemsSketchHashMap.get("internalIpPkt").getStringCollectionValueHashMap().put(Dimension.setInternalIpDimension(entity),collectionValue);
+
+                    }else {//做加和
+
+                        internalIpPkt.getCollectionValue(internalIpPkt,entity);
+
+                        stringItemsSketchHashMap.get("internalIpPkt").getStringCollectionValueHashMap().put(Dimension.setInternalIpDimension(entity),internalIpPkt);
+
+
+                    }
+
+
+
+
+
+                }
+                break;
+            case "externalIpPkt":
+                if(stringItemsSketchHashMap.isEmpty()) {
+
+                    ItemsSketch<String> externalIpPktItemsSketch = new ItemsSketch<>(1048576);
+
+                    externalIpPktItemsSketch.update(Dimension.setExternalIpDimension(entity),entity.getCommon_c2s_pkt_num()+entity.getCommon_s2c_pkt_num());
+
+
+                    CollectionValue collectionValue = new CollectionValue(entity,"packets");
+                    collectionValue.setSource(entity.getCommon_external_ip());
+                    HashMap<String, CollectionValue> stringCollectionValueHashMap = new HashMap<>();
+                    stringCollectionValueHashMap.put(Dimension.setExternalIpDimension(entity),collectionValue);
+
+
+
+                    DimensionItemsSketch externalIpPktDimensionItemsSketch = new DimensionItemsSketch(Dimension.EXTERNALIP,externalIpPktItemsSketch,stringCollectionValueHashMap);
+
+                    stringItemsSketchHashMap.put("externalIpPkt",externalIpPktDimensionItemsSketch);
+
+
+                }else {
+
+                    stringItemsSketchHashMap.get("externalIpPkt").getItemsSketch().update(Dimension.setExternalIpDimension(entity),entity.getCommon_c2s_pkt_num()+entity.getCommon_s2c_pkt_num());
+
+
+
+                    CollectionValue externalIpPkt = stringItemsSketchHashMap.get("externalIpPkt").getStringCollectionValueHashMap().get(Dimension.setExternalIpDimension(entity));
+
+
+                    if (externalIpPkt==null){
+
+                        CollectionValue collectionValue = new CollectionValue(entity,"packets");
+                        collectionValue.setSource(entity.getCommon_external_ip());
+
+                        stringItemsSketchHashMap.get("externalIpPkt").getStringCollectionValueHashMap().put(Dimension.setExternalIpDimension(entity),collectionValue);
+
+                    }else {//做加和
+
+                        externalIpPkt.getCollectionValue(externalIpPkt,entity);
+
+                        stringItemsSketchHashMap.get("externalIpPkt").getStringCollectionValueHashMap().put(Dimension.setExternalIpDimension(entity),externalIpPkt);
 
 
                     }
@@ -577,46 +577,46 @@ public class DatasketchForMetricsAggregate implements AggregateFunction<Entity, 
 
                 }
                 break;
-            case "fivePkt":
+            case "domainPkt":
                 if(stringItemsSketchHashMap.isEmpty()) {
 
-                    ItemsSketch<String> fivePktItemsSketch = new ItemsSketch<>(1048576);
+                    ItemsSketch<String> domainPktItemsSketch = new ItemsSketch<>(1048576);
 
-                    fivePktItemsSketch.update(Dimension.setFiveDimension(cnRecordLog),cnRecordLog.getCommon_c2s_pkt_num()+cnRecordLog.getCommon_s2c_pkt_num());
+                    domainPktItemsSketch.update(Dimension.setDomainDimension(entity),entity.getCommon_c2s_pkt_num()+entity.getCommon_s2c_pkt_num());
 
-                    CollectionValue collectionValue = new CollectionValue(cnRecordLog,"packets");
-                    collectionValue.setSource(cnRecordLog.getHttp_domain());
+                    CollectionValue collectionValue = new CollectionValue(entity,"packets");
+                    collectionValue.setSource(entity.getHttp_domain());
                     HashMap<String, CollectionValue> stringCollectionValueHashMap = new HashMap<>();
-                    stringCollectionValueHashMap.put(Dimension.setFiveDimension(cnRecordLog),collectionValue);
+                    stringCollectionValueHashMap.put(Dimension.setDomainDimension(entity),collectionValue);
 
 
 
 
 
-                    DimensionItemsSketch fivePktDimensionItemsSketch = new DimensionItemsSketch(Dimension.FIVE,fivePktItemsSketch,stringCollectionValueHashMap);
+                    DimensionItemsSketch domainPktDimensionItemsSketch = new DimensionItemsSketch(Dimension.DOMAIN,domainPktItemsSketch,stringCollectionValueHashMap);
 
-                    stringItemsSketchHashMap.put("fivePkt",fivePktDimensionItemsSketch);
+                    stringItemsSketchHashMap.put("domainPkt",domainPktDimensionItemsSketch);
 
 
                 }else {
 
-                    stringItemsSketchHashMap.get("fivePkt").getItemsSketch().update(Dimension.setFiveDimension(cnRecordLog),cnRecordLog.getCommon_c2s_pkt_num()+cnRecordLog.getCommon_s2c_pkt_num());
+                    stringItemsSketchHashMap.get("domainPkt").getItemsSketch().update(Dimension.setDomainDimension(entity),entity.getCommon_c2s_pkt_num()+entity.getCommon_s2c_pkt_num());
 
-                    CollectionValue fivePkt = stringItemsSketchHashMap.get("fivePkt").getStringCollectionValueHashMap().get(Dimension.setFiveDimension(cnRecordLog));
+                    CollectionValue domainPkt = stringItemsSketchHashMap.get("domainPkt").getStringCollectionValueHashMap().get(Dimension.setDomainDimension(entity));
 
 
-                    if (fivePkt==null){
+                    if (domainPkt==null){
 
-                        CollectionValue collectionValue = new CollectionValue(cnRecordLog,"packets");
-                        collectionValue.setSource(cnRecordLog.getHttp_domain());
+                        CollectionValue collectionValue = new CollectionValue(entity,"packets");
+                        collectionValue.setSource(entity.getHttp_domain());
 
-                        stringItemsSketchHashMap.get("fivePkt").getStringCollectionValueHashMap().put(Dimension.setFiveDimension(cnRecordLog),collectionValue);
+                        stringItemsSketchHashMap.get("domainPkt").getStringCollectionValueHashMap().put(Dimension.setDomainDimension(entity),collectionValue);
 
                     }else {//做加和
 
-                        fivePkt.getCollectionValue(fivePkt,cnRecordLog);
+                        domainPkt.getCollectionValue(domainPkt,entity);
 
-                        stringItemsSketchHashMap.get("fivePkt").getStringCollectionValueHashMap().put(Dimension.setFiveDimension(cnRecordLog),fivePkt);
+                        stringItemsSketchHashMap.get("domainPkt").getStringCollectionValueHashMap().put(Dimension.setDomainDimension(entity),domainPkt);
 
 
                     }
@@ -627,46 +627,46 @@ public class DatasketchForMetricsAggregate implements AggregateFunction<Entity, 
 
                 }
                 break;
-            case "sixPkt":
+            case "subscriberIdPkt":
                 if(stringItemsSketchHashMap.isEmpty()) {
 
 
-                    ItemsSketch<String> sixPktItemsSketch = new ItemsSketch<>(1048576);
+                    ItemsSketch<String> subscriberIdPktItemsSketch = new ItemsSketch<>(1048576);
 
-                    sixPktItemsSketch.update(Dimension.setSixDimension(cnRecordLog),cnRecordLog.getCommon_c2s_pkt_num()+cnRecordLog.getCommon_s2c_pkt_num());
+                    subscriberIdPktItemsSketch.update(Dimension.setSubscriberIdDimension(entity),entity.getCommon_c2s_pkt_num()+entity.getCommon_s2c_pkt_num());
 
-                    CollectionValue collectionValue = new CollectionValue(cnRecordLog,"packets");
-                    collectionValue.setSource(cnRecordLog.getCommon_subscriber_id());
+                    CollectionValue collectionValue = new CollectionValue(entity,"packets");
+                    collectionValue.setSource(entity.getCommon_subscriber_id());
                     HashMap<String, CollectionValue> stringCollectionValueHashMap = new HashMap<>();
-                    stringCollectionValueHashMap.put(Dimension.setSixDimension(cnRecordLog),collectionValue);
+                    stringCollectionValueHashMap.put(Dimension.setSubscriberIdDimension(entity),collectionValue);
 
 
 
 
 
-                    DimensionItemsSketch sixPktDimensionItemsSketch = new DimensionItemsSketch(Dimension.SIX,sixPktItemsSketch,stringCollectionValueHashMap);
+                    DimensionItemsSketch subscriberIdPktDimensionItemsSketch = new DimensionItemsSketch(Dimension.SUBSCRIBERID,subscriberIdPktItemsSketch,stringCollectionValueHashMap);
 
-                    stringItemsSketchHashMap.put("sixPkt",sixPktDimensionItemsSketch);
+                    stringItemsSketchHashMap.put("subscriberIdPkt",subscriberIdPktDimensionItemsSketch);
 
                 }else {
 
-                    stringItemsSketchHashMap.get("sixPkt").getItemsSketch().update(Dimension.setSixDimension(cnRecordLog),cnRecordLog.getCommon_c2s_pkt_num()+cnRecordLog.getCommon_s2c_pkt_num());
+                    stringItemsSketchHashMap.get("subscriberIdPkt").getItemsSketch().update(Dimension.setSubscriberIdDimension(entity),entity.getCommon_c2s_pkt_num()+entity.getCommon_s2c_pkt_num());
 
-                    CollectionValue sixPkt = stringItemsSketchHashMap.get("sixPkt").getStringCollectionValueHashMap().get(Dimension.setSixDimension(cnRecordLog));
+                    CollectionValue subscriberIdPkt = stringItemsSketchHashMap.get("subscriberIdPkt").getStringCollectionValueHashMap().get(Dimension.setSubscriberIdDimension(entity));
 
 
-                    if (sixPkt==null){
+                    if (subscriberIdPkt==null){
 
-                        CollectionValue collectionValue = new CollectionValue(cnRecordLog,"packets");
-                        collectionValue.setSource(cnRecordLog.getCommon_subscriber_id());
+                        CollectionValue collectionValue = new CollectionValue(entity,"packets");
+                        collectionValue.setSource(entity.getCommon_subscriber_id());
 
-                        stringItemsSketchHashMap.get("sixPkt").getStringCollectionValueHashMap().put(Dimension.setSixDimension(cnRecordLog),collectionValue);
+                        stringItemsSketchHashMap.get("subscriberIdPkt").getStringCollectionValueHashMap().put(Dimension.setSubscriberIdDimension(entity),collectionValue);
 
                     }else {//做加和
 
-                        sixPkt.getCollectionValue(sixPkt,cnRecordLog);
+                        subscriberIdPkt.getCollectionValue(subscriberIdPkt,entity);
 
-                        stringItemsSketchHashMap.get("sixPkt").getStringCollectionValueHashMap().put(Dimension.setSixDimension(cnRecordLog),sixPkt);
+                        stringItemsSketchHashMap.get("subscriberIdPkt").getStringCollectionValueHashMap().put(Dimension.setSubscriberIdDimension(entity),subscriberIdPkt);
 
 
                     }
@@ -677,45 +677,45 @@ public class DatasketchForMetricsAggregate implements AggregateFunction<Entity, 
 
                 }
                 break;
-            case "sevenPkt":
+            case "appLabelPkt":
                 if(stringItemsSketchHashMap.isEmpty()) {
 
-                    ItemsSketch<String> sevenPktItemsSketch = new ItemsSketch<>(1048576);
+                    ItemsSketch<String> appLabelPktItemsSketch = new ItemsSketch<>(1048576);
 
-                    sevenPktItemsSketch.update(Dimension.setSevenDimension(cnRecordLog),cnRecordLog.getCommon_c2s_pkt_num()+cnRecordLog.getCommon_s2c_pkt_num());
+                    appLabelPktItemsSketch.update(Dimension.setAppLabelDimension(entity),entity.getCommon_c2s_pkt_num()+entity.getCommon_s2c_pkt_num());
 
-                    CollectionValue collectionValue = new CollectionValue(cnRecordLog,"packets");
-                    collectionValue.setSource(cnRecordLog.getCommon_app_label());
+                    CollectionValue collectionValue = new CollectionValue(entity,"packets");
+                    collectionValue.setSource(entity.getCommon_app_label());
                     HashMap<String, CollectionValue> stringCollectionValueHashMap = new HashMap<>();
-                    stringCollectionValueHashMap.put(Dimension.setSevenDimension(cnRecordLog),collectionValue);
+                    stringCollectionValueHashMap.put(Dimension.setAppLabelDimension(entity),collectionValue);
 
 
 
 
 
-                    DimensionItemsSketch sevenPktDimensionItemsSketch = new DimensionItemsSketch(Dimension.SEVEN,sevenPktItemsSketch,stringCollectionValueHashMap);
+                    DimensionItemsSketch appLabelPktDimensionItemsSketch = new DimensionItemsSketch(Dimension.APPLABEL,appLabelPktItemsSketch,stringCollectionValueHashMap);
 
-                    stringItemsSketchHashMap.put("sevenPkt",sevenPktDimensionItemsSketch);
+                    stringItemsSketchHashMap.put("appLabelPkt",appLabelPktDimensionItemsSketch);
 
                 }else {
 
-                    stringItemsSketchHashMap.get("sevenPkt").getItemsSketch().update(Dimension.setSevenDimension(cnRecordLog),cnRecordLog.getCommon_c2s_pkt_num()+cnRecordLog.getCommon_s2c_pkt_num());
+                    stringItemsSketchHashMap.get("appLabelPkt").getItemsSketch().update(Dimension.setAppLabelDimension(entity),entity.getCommon_c2s_pkt_num()+entity.getCommon_s2c_pkt_num());
 
-                    CollectionValue sevenPkt = stringItemsSketchHashMap.get("sevenPkt").getStringCollectionValueHashMap().get(Dimension.setSevenDimension(cnRecordLog));
+                    CollectionValue appLabelPkt = stringItemsSketchHashMap.get("appLabelPkt").getStringCollectionValueHashMap().get(Dimension.setAppLabelDimension(entity));
 
 
-                    if (sevenPkt==null){
+                    if (appLabelPkt==null){
 
-                        CollectionValue collectionValue = new CollectionValue(cnRecordLog,"packets");
-                        collectionValue.setSource(cnRecordLog.getCommon_app_label());
+                        CollectionValue collectionValue = new CollectionValue(entity,"packets");
+                        collectionValue.setSource(entity.getCommon_app_label());
 
-                        stringItemsSketchHashMap.get("sevenPkt").getStringCollectionValueHashMap().put(Dimension.setSevenDimension(cnRecordLog),collectionValue);
+                        stringItemsSketchHashMap.get("appLabelPkt").getStringCollectionValueHashMap().put(Dimension.setAppLabelDimension(entity),collectionValue);
 
                     }else {//做加和
 
-                        sevenPkt.getCollectionValue(sevenPkt,cnRecordLog);
+                        appLabelPkt.getCollectionValue(appLabelPkt,entity);
 
-                        stringItemsSketchHashMap.get("sevenPkt").getStringCollectionValueHashMap().put(Dimension.setSevenDimension(cnRecordLog),sevenPkt);
+                        stringItemsSketchHashMap.get("appLabelPkt").getStringCollectionValueHashMap().put(Dimension.setAppLabelDimension(entity),appLabelPkt);
 
 
                     }
@@ -725,47 +725,47 @@ public class DatasketchForMetricsAggregate implements AggregateFunction<Entity, 
 
                 }
                 break;
-            case "oneByte":
+            case "clientIpByte":
                 if(stringItemsSketchHashMap.isEmpty()) {
 
 
-                    ItemsSketch<String> oneByteItemsSketch = new ItemsSketch<>(1048576);
+                    ItemsSketch<String> clientIpByteItemsSketch = new ItemsSketch<>(1048576);
 
 
-                    oneByteItemsSketch.update(Dimension.setOneDimension(cnRecordLog),cnRecordLog.getCommon_c2s_byte_num()+cnRecordLog.getCommon_s2c_byte_num());
+                    clientIpByteItemsSketch.update(Dimension.setClientIpDimension(entity),entity.getCommon_c2s_byte_num()+entity.getCommon_s2c_byte_num());
 
-                    CollectionValue collectionValue = new CollectionValue(cnRecordLog,"bytes");
-                    collectionValue.setSource(cnRecordLog.getCommon_client_ip());
+                    CollectionValue collectionValue = new CollectionValue(entity,"bytes");
+                    collectionValue.setSource(entity.getCommon_client_ip());
                     HashMap<String, CollectionValue> stringCollectionValueHashMap = new HashMap<>();
-                    stringCollectionValueHashMap.put(Dimension.setOneDimension(cnRecordLog),collectionValue);
+                    stringCollectionValueHashMap.put(Dimension.setClientIpDimension(entity),collectionValue);
 
 
 
 
 
-                    DimensionItemsSketch oneByteDimensionItemsSketch = new DimensionItemsSketch(Dimension.ONE,oneByteItemsSketch,stringCollectionValueHashMap);
+                    DimensionItemsSketch clientIpByteDimensionItemsSketch = new DimensionItemsSketch(Dimension.CLIENTIP,clientIpByteItemsSketch,stringCollectionValueHashMap);
 
-                    stringItemsSketchHashMap.put("oneByte",oneByteDimensionItemsSketch);
+                    stringItemsSketchHashMap.put("clientIpByte",clientIpByteDimensionItemsSketch);
 
                 }else {
 
-                    stringItemsSketchHashMap.get("oneByte").getItemsSketch().update(Dimension.setOneDimension(cnRecordLog),cnRecordLog.getCommon_c2s_byte_num()+cnRecordLog.getCommon_s2c_byte_num());
+                    stringItemsSketchHashMap.get("clientIpByte").getItemsSketch().update(Dimension.setClientIpDimension(entity),entity.getCommon_c2s_byte_num()+entity.getCommon_s2c_byte_num());
 
 
-                    CollectionValue oneByte = stringItemsSketchHashMap.get("oneByte").getStringCollectionValueHashMap().get(Dimension.setOneDimension(cnRecordLog));//从key获取集合
+                    CollectionValue clientIpByte = stringItemsSketchHashMap.get("clientIpByte").getStringCollectionValueHashMap().get(Dimension.setClientIpDimension(entity));//从key获取集合
 
-                    if (oneByte==null){
+                    if (clientIpByte==null){
 
-                        CollectionValue collectionValue = new CollectionValue(cnRecordLog,"bytes");
-                        collectionValue.setSource(cnRecordLog.getCommon_client_ip());
+                        CollectionValue collectionValue = new CollectionValue(entity,"bytes");
+                        collectionValue.setSource(entity.getCommon_client_ip());
 
-                        stringItemsSketchHashMap.get("oneByte").getStringCollectionValueHashMap().put(Dimension.setOneDimension(cnRecordLog),collectionValue);
+                        stringItemsSketchHashMap.get("clientIpByte").getStringCollectionValueHashMap().put(Dimension.setClientIpDimension(entity),collectionValue);
 
                     }else {//做加和
 
-                        oneByte.getCollectionValue(oneByte,cnRecordLog);
+                        clientIpByte.getCollectionValue(clientIpByte,entity);
 
-                        stringItemsSketchHashMap.get("oneByte").getStringCollectionValueHashMap().put(Dimension.setOneDimension(cnRecordLog),oneByte);
+                        stringItemsSketchHashMap.get("clientIpByte").getStringCollectionValueHashMap().put(Dimension.setClientIpDimension(entity),clientIpByte);
 
 
                     }
@@ -774,45 +774,45 @@ public class DatasketchForMetricsAggregate implements AggregateFunction<Entity, 
 
                 }
                 break;
-            case "twoByte":
+            case "serverIpByte":
                 if(stringItemsSketchHashMap.isEmpty()) {
 
-                    ItemsSketch<String> twoByteItemsSketch = new ItemsSketch<>(1048576);
+                    ItemsSketch<String> serverIpByteItemsSketch = new ItemsSketch<>(1048576);
 
-                    twoByteItemsSketch.update(Dimension.setTwoDimension(cnRecordLog),cnRecordLog.getCommon_c2s_byte_num()+cnRecordLog.getCommon_s2c_byte_num());
+                    serverIpByteItemsSketch.update(Dimension.setServerIpDimension(entity),entity.getCommon_c2s_byte_num()+entity.getCommon_s2c_byte_num());
 
-                    CollectionValue collectionValue = new CollectionValue(cnRecordLog,"bytes");
-                    collectionValue.setSource(cnRecordLog.getCommon_server_ip());
+                    CollectionValue collectionValue = new CollectionValue(entity,"bytes");
+                    collectionValue.setSource(entity.getCommon_server_ip());
                     HashMap<String, CollectionValue> stringCollectionValueHashMap = new HashMap<>();
-                    stringCollectionValueHashMap.put(Dimension.setTwoDimension(cnRecordLog),collectionValue);
+                    stringCollectionValueHashMap.put(Dimension.setServerIpDimension(entity),collectionValue);
 
 
 
 
 
-                    DimensionItemsSketch twoByteDimensionItemsSketch = new DimensionItemsSketch(Dimension.TWO,twoByteItemsSketch,stringCollectionValueHashMap);
+                    DimensionItemsSketch serverIpByteDimensionItemsSketch = new DimensionItemsSketch(Dimension.SERVERIP,serverIpByteItemsSketch,stringCollectionValueHashMap);
 
-                    stringItemsSketchHashMap.put("twoByte",twoByteDimensionItemsSketch);
+                    stringItemsSketchHashMap.put("serverIpByte",serverIpByteDimensionItemsSketch);
 
                 }else {
 
-                    stringItemsSketchHashMap.get("twoByte").getItemsSketch().update(Dimension.setTwoDimension(cnRecordLog),cnRecordLog.getCommon_c2s_byte_num()+cnRecordLog.getCommon_s2c_byte_num());
+                    stringItemsSketchHashMap.get("serverIpByte").getItemsSketch().update(Dimension.setServerIpDimension(entity),entity.getCommon_c2s_byte_num()+entity.getCommon_s2c_byte_num());
 
-                    CollectionValue twoByte = stringItemsSketchHashMap.get("twoByte").getStringCollectionValueHashMap().get(Dimension.setTwoDimension(cnRecordLog));
+                    CollectionValue serverIpByte = stringItemsSketchHashMap.get("serverIpByte").getStringCollectionValueHashMap().get(Dimension.setServerIpDimension(entity));
 
 
-                    if (twoByte==null){
+                    if (serverIpByte==null){
 
-                        CollectionValue collectionValue = new CollectionValue(cnRecordLog,"bytes");
-                        collectionValue.setSource(cnRecordLog.getCommon_server_ip());
+                        CollectionValue collectionValue = new CollectionValue(entity,"bytes");
+                        collectionValue.setSource(entity.getCommon_server_ip());
 
-                        stringItemsSketchHashMap.get("twoByte").getStringCollectionValueHashMap().put(Dimension.setTwoDimension(cnRecordLog),collectionValue);
+                        stringItemsSketchHashMap.get("serverIpByte").getStringCollectionValueHashMap().put(Dimension.setServerIpDimension(entity),collectionValue);
 
                     }else {//做加和
 
-                        twoByte.getCollectionValue(twoByte,cnRecordLog);
+                        serverIpByte.getCollectionValue(serverIpByte,entity);
 
-                        stringItemsSketchHashMap.get("twoByte").getStringCollectionValueHashMap().put(Dimension.setTwoDimension(cnRecordLog),twoByte);
+                        stringItemsSketchHashMap.get("serverIpByte").getStringCollectionValueHashMap().put(Dimension.setServerIpDimension(entity),serverIpByte);
 
 
                     }
@@ -821,155 +821,49 @@ public class DatasketchForMetricsAggregate implements AggregateFunction<Entity, 
 
                 }
                 break;
-            case "threeByte":
+            case "internalIpByte":
                 if(stringItemsSketchHashMap.isEmpty()) {
 
 
-                    ItemsSketch<String> threeByteItemsSketch = new ItemsSketch<>(1048576);
+                    ItemsSketch<String> internalIpByteItemsSketch = new ItemsSketch<>(1048576);
 
-                    threeByteItemsSketch.update(Dimension.setThreeDimension(cnRecordLog),cnRecordLog.getCommon_c2s_byte_num()+cnRecordLog.getCommon_s2c_byte_num());
+                    internalIpByteItemsSketch.update(Dimension.setInternalIpDimension(entity),entity.getCommon_c2s_byte_num()+entity.getCommon_s2c_byte_num());
 
-                    CollectionValue collectionValue = new CollectionValue(cnRecordLog,"bytes");
-                    collectionValue.setSource(cnRecordLog.getCommon_internal_ip());
+                    CollectionValue collectionValue = new CollectionValue(entity,"bytes");
+                    collectionValue.setSource(entity.getCommon_internal_ip());
                     HashMap<String, CollectionValue> stringCollectionValueHashMap = new HashMap<>();
-                    stringCollectionValueHashMap.put(Dimension.setThreeDimension(cnRecordLog),collectionValue);
+                    stringCollectionValueHashMap.put(Dimension.setInternalIpDimension(entity),collectionValue);
 
 
 
 
 
 
-                    DimensionItemsSketch threeByteDimensionItemsSketch = new DimensionItemsSketch(Dimension.THREE,threeByteItemsSketch,stringCollectionValueHashMap);
+                    DimensionItemsSketch internalIpByteDimensionItemsSketch = new DimensionItemsSketch(Dimension.INTERNALIP,internalIpByteItemsSketch,stringCollectionValueHashMap);
 
 
-                    stringItemsSketchHashMap.put("threeByte",threeByteDimensionItemsSketch);
+                    stringItemsSketchHashMap.put("internalIpByte",internalIpByteDimensionItemsSketch);
 
                 }else {
 
-                    stringItemsSketchHashMap.get("threeByte").getItemsSketch().update(Dimension.setThreeDimension(cnRecordLog),cnRecordLog.getCommon_c2s_byte_num()+cnRecordLog.getCommon_s2c_byte_num());
+                    stringItemsSketchHashMap.get("internalIpByte").getItemsSketch().update(Dimension.setInternalIpDimension(entity),entity.getCommon_c2s_byte_num()+entity.getCommon_s2c_byte_num());
 
 
-                    CollectionValue threeByte = stringItemsSketchHashMap.get("threeByte").getStringCollectionValueHashMap().get(Dimension.setThreeDimension(cnRecordLog));
+                    CollectionValue internalIpByte = stringItemsSketchHashMap.get("internalIpByte").getStringCollectionValueHashMap().get(Dimension.setInternalIpDimension(entity));
 
 
-                    if (threeByte==null){
+                    if (internalIpByte==null){
 
-                        CollectionValue collectionValue = new CollectionValue(cnRecordLog,"bytes");
-                        collectionValue.setSource(cnRecordLog.getCommon_server_ip());
+                        CollectionValue collectionValue = new CollectionValue(entity,"bytes");
+                        collectionValue.setSource(entity.getCommon_server_ip());
 
-                        stringItemsSketchHashMap.get("threeByte").getStringCollectionValueHashMap().put(Dimension.setThreeDimension(cnRecordLog),collectionValue);
-
-                    }else {//做加和
-
-                        threeByte.getCollectionValue(threeByte,cnRecordLog);
-
-                        stringItemsSketchHashMap.get("threeByte").getStringCollectionValueHashMap().put(Dimension.setThreeDimension(cnRecordLog),threeByte);
-
-
-                    }
-
-
-
-
-
-                }
-                break;
-            case "fourByte":
-                if(stringItemsSketchHashMap.isEmpty()) {
-
-
-
-                    ItemsSketch<String> fourByteItemsSketch = new ItemsSketch<>(1048576);
-
-                    fourByteItemsSketch.update(Dimension.setFourDimension(cnRecordLog),cnRecordLog.getCommon_c2s_byte_num()+cnRecordLog.getCommon_s2c_byte_num());
-
-
-                    CollectionValue collectionValue = new CollectionValue(cnRecordLog,"bytes");
-                    collectionValue.setSource(cnRecordLog.getCommon_external_ip());
-                    HashMap<String, CollectionValue> stringCollectionValueHashMap = new HashMap<>();
-                    stringCollectionValueHashMap.put(Dimension.setFourDimension(cnRecordLog),collectionValue);
-
-
-
-
-
-                    DimensionItemsSketch fourByteDimensionItemsSketch = new DimensionItemsSketch(Dimension.FOUR,fourByteItemsSketch,stringCollectionValueHashMap);
-
-
-
-                    stringItemsSketchHashMap.put("fourByte",fourByteDimensionItemsSketch);
-
-                }else {
-
-                    stringItemsSketchHashMap.get("fourByte").getItemsSketch().update(Dimension.setFourDimension(cnRecordLog),cnRecordLog.getCommon_c2s_byte_num()+cnRecordLog.getCommon_s2c_byte_num());
-
-                    CollectionValue fourByte = stringItemsSketchHashMap.get("fourByte").getStringCollectionValueHashMap().get(Dimension.setFourDimension(cnRecordLog));
-
-
-                    if (fourByte==null){
-
-                        CollectionValue collectionValue = new CollectionValue(cnRecordLog,"bytes");
-                        collectionValue.setSource(cnRecordLog.getCommon_external_ip());
-
-                        stringItemsSketchHashMap.get("fourByte").getStringCollectionValueHashMap().put(Dimension.setFourDimension(cnRecordLog),collectionValue);
+                        stringItemsSketchHashMap.get("internalIpByte").getStringCollectionValueHashMap().put(Dimension.setInternalIpDimension(entity),collectionValue);
 
                     }else {//做加和
 
-                        fourByte.getCollectionValue(fourByte,cnRecordLog);
+                        internalIpByte.getCollectionValue(internalIpByte,entity);
 
-                        stringItemsSketchHashMap.get("fourByte").getStringCollectionValueHashMap().put(Dimension.setFourDimension(cnRecordLog),fourByte);
-
-
-                    }
-
-
-
-
-
-
-                }
-
-                break;
-            case "fiveByte":
-                if(stringItemsSketchHashMap.isEmpty()) {
-
-
-                    ItemsSketch<String> fiveByteItemsSketch = new ItemsSketch<>(1048576);
-
-                    fiveByteItemsSketch.update(Dimension.setFiveDimension(cnRecordLog),cnRecordLog.getCommon_c2s_byte_num()+cnRecordLog.getCommon_s2c_byte_num());
-
-                    CollectionValue collectionValue = new CollectionValue(cnRecordLog,"bytes");
-                    collectionValue.setSource(cnRecordLog.getHttp_domain());
-                    HashMap<String, CollectionValue> stringCollectionValueHashMap = new HashMap<>();
-                    stringCollectionValueHashMap.put(Dimension.setFiveDimension(cnRecordLog),collectionValue);
-
-
-
-
-
-
-                    DimensionItemsSketch fiveByteDimensionItemsSketch = new DimensionItemsSketch(Dimension.FIVE,fiveByteItemsSketch,stringCollectionValueHashMap);
-
-                    stringItemsSketchHashMap.put("fiveByte",fiveByteDimensionItemsSketch);
-
-                }else {
-                    stringItemsSketchHashMap.get("fiveByte").getItemsSketch().update(Dimension.setFiveDimension(cnRecordLog),cnRecordLog.getCommon_c2s_byte_num()+cnRecordLog.getCommon_s2c_byte_num());
-
-                    CollectionValue fiveByte = stringItemsSketchHashMap.get("fiveByte").getStringCollectionValueHashMap().get(Dimension.setFiveDimension(cnRecordLog));
-
-
-                    if (fiveByte==null){
-
-                        CollectionValue collectionValue = new CollectionValue(cnRecordLog,"bytes");
-                        collectionValue.setSource(cnRecordLog.getHttp_domain());
-
-                        stringItemsSketchHashMap.get("fiveByte").getStringCollectionValueHashMap().put(Dimension.setFiveDimension(cnRecordLog),collectionValue);
-
-                    }else {//做加和
-
-                        fiveByte.getCollectionValue(fiveByte,cnRecordLog);
-
-                        stringItemsSketchHashMap.get("fiveByte").getStringCollectionValueHashMap().put(Dimension.setFiveDimension(cnRecordLog),fiveByte);
+                        stringItemsSketchHashMap.get("internalIpByte").getStringCollectionValueHashMap().put(Dimension.setInternalIpDimension(entity),internalIpByte);
 
 
                     }
@@ -979,51 +873,51 @@ public class DatasketchForMetricsAggregate implements AggregateFunction<Entity, 
 
 
                 }
-
                 break;
-            case "sixByte":
+            case "externalIpByte":
                 if(stringItemsSketchHashMap.isEmpty()) {
 
 
-                    ItemsSketch<String> sixByteItemsSketch = new ItemsSketch<>(1048576);
 
-                    sixByteItemsSketch.update(Dimension.setSixDimension(cnRecordLog),cnRecordLog.getCommon_c2s_byte_num()+cnRecordLog.getCommon_s2c_byte_num());
+                    ItemsSketch<String> externalIpByteItemsSketch = new ItemsSketch<>(1048576);
+
+                    externalIpByteItemsSketch.update(Dimension.setExternalIpDimension(entity),entity.getCommon_c2s_byte_num()+entity.getCommon_s2c_byte_num());
 
 
-                    CollectionValue collectionValue = new CollectionValue(cnRecordLog,"bytes");
-                    collectionValue.setSource(cnRecordLog.getCommon_subscriber_id());
+                    CollectionValue collectionValue = new CollectionValue(entity,"bytes");
+                    collectionValue.setSource(entity.getCommon_external_ip());
                     HashMap<String, CollectionValue> stringCollectionValueHashMap = new HashMap<>();
-                    stringCollectionValueHashMap.put(Dimension.setSixDimension(cnRecordLog),collectionValue);
+                    stringCollectionValueHashMap.put(Dimension.setExternalIpDimension(entity),collectionValue);
 
 
 
 
 
-                    DimensionItemsSketch sixByteDimensionItemsSketch = new DimensionItemsSketch(Dimension.SIX,sixByteItemsSketch,stringCollectionValueHashMap);
+                    DimensionItemsSketch externalIpByteDimensionItemsSketch = new DimensionItemsSketch(Dimension.EXTERNALIP,externalIpByteItemsSketch,stringCollectionValueHashMap);
 
 
-                    stringItemsSketchHashMap.put("sixByte",sixByteDimensionItemsSketch);
 
+                    stringItemsSketchHashMap.put("externalIpByte",externalIpByteDimensionItemsSketch);
 
                 }else {
 
-                    stringItemsSketchHashMap.get("sixByte").getItemsSketch().update(Dimension.setSixDimension(cnRecordLog),cnRecordLog.getCommon_c2s_byte_num()+cnRecordLog.getCommon_s2c_byte_num());
+                    stringItemsSketchHashMap.get("externalIpByte").getItemsSketch().update(Dimension.setExternalIpDimension(entity),entity.getCommon_c2s_byte_num()+entity.getCommon_s2c_byte_num());
 
-                    CollectionValue sixByte = stringItemsSketchHashMap.get("sixByte").getStringCollectionValueHashMap().get(Dimension.setSixDimension(cnRecordLog));
+                    CollectionValue externalIpByte = stringItemsSketchHashMap.get("externalIpByte").getStringCollectionValueHashMap().get(Dimension.setExternalIpDimension(entity));
 
 
-                    if (sixByte==null){
+                    if (externalIpByte==null){
 
-                        CollectionValue collectionValue = new CollectionValue(cnRecordLog,"bytes");
-                        collectionValue.setSource(cnRecordLog.getCommon_subscriber_id());
+                        CollectionValue collectionValue = new CollectionValue(entity,"bytes");
+                        collectionValue.setSource(entity.getCommon_external_ip());
 
-                        stringItemsSketchHashMap.get("sixByte").getStringCollectionValueHashMap().put(Dimension.setSixDimension(cnRecordLog),collectionValue);
+                        stringItemsSketchHashMap.get("externalIpByte").getStringCollectionValueHashMap().put(Dimension.setExternalIpDimension(entity),collectionValue);
 
                     }else {//做加和
 
-                        sixByte.getCollectionValue(sixByte,cnRecordLog);
+                        externalIpByte.getCollectionValue(externalIpByte,entity);
 
-                        stringItemsSketchHashMap.get("sixByte").getStringCollectionValueHashMap().put(Dimension.setSixDimension(cnRecordLog),sixByte);
+                        stringItemsSketchHashMap.get("externalIpByte").getStringCollectionValueHashMap().put(Dimension.setExternalIpDimension(entity),externalIpByte);
 
 
                     }
@@ -1036,50 +930,156 @@ public class DatasketchForMetricsAggregate implements AggregateFunction<Entity, 
                 }
 
                 break;
-            case "sevenByte":
+            case "domainByte":
                 if(stringItemsSketchHashMap.isEmpty()) {
 
 
-                    ItemsSketch<String> sevenByteItemsSketch = new ItemsSketch<>(1048576);
+                    ItemsSketch<String> domainByteItemsSketch = new ItemsSketch<>(1048576);
 
+                    domainByteItemsSketch.update(Dimension.setDomainDimension(entity),entity.getCommon_c2s_byte_num()+entity.getCommon_s2c_byte_num());
 
-                    sevenByteItemsSketch.update(Dimension.setSevenDimension(cnRecordLog),cnRecordLog.getCommon_c2s_byte_num()+cnRecordLog.getCommon_s2c_byte_num());
-
-
-                    CollectionValue collectionValue = new CollectionValue(cnRecordLog,"bytes");
-                    collectionValue.setSource(cnRecordLog.getCommon_app_label());
+                    CollectionValue collectionValue = new CollectionValue(entity,"bytes");
+                    collectionValue.setSource(entity.getHttp_domain());
                     HashMap<String, CollectionValue> stringCollectionValueHashMap = new HashMap<>();
-                    stringCollectionValueHashMap.put(Dimension.setSevenDimension(cnRecordLog),collectionValue);
+                    stringCollectionValueHashMap.put(Dimension.setDomainDimension(entity),collectionValue);
 
 
 
 
 
-                    DimensionItemsSketch sevenByteDimensionItemsSketch = new DimensionItemsSketch(Dimension.SEVEN,sevenByteItemsSketch,stringCollectionValueHashMap);
+
+                    DimensionItemsSketch domainByteDimensionItemsSketch = new DimensionItemsSketch(Dimension.DOMAIN,domainByteItemsSketch,stringCollectionValueHashMap);
+
+                    stringItemsSketchHashMap.put("domainByte",domainByteDimensionItemsSketch);
+
+                }else {
+                    stringItemsSketchHashMap.get("domainByte").getItemsSketch().update(Dimension.setDomainDimension(entity),entity.getCommon_c2s_byte_num()+entity.getCommon_s2c_byte_num());
+
+                    CollectionValue domainByte = stringItemsSketchHashMap.get("domainByte").getStringCollectionValueHashMap().get(Dimension.setDomainDimension(entity));
 
 
-                    stringItemsSketchHashMap.put("sevenByte",sevenByteDimensionItemsSketch);
+                    if (domainByte==null){
+
+                        CollectionValue collectionValue = new CollectionValue(entity,"bytes");
+                        collectionValue.setSource(entity.getHttp_domain());
+
+                        stringItemsSketchHashMap.get("domainByte").getStringCollectionValueHashMap().put(Dimension.setDomainDimension(entity),collectionValue);
+
+                    }else {//做加和
+
+                        domainByte.getCollectionValue(domainByte,entity);
+
+                        stringItemsSketchHashMap.get("domainByte").getStringCollectionValueHashMap().put(Dimension.setDomainDimension(entity),domainByte);
+
+
+                    }
+
+
+
+
+
+                }
+
+                break;
+            case "subscriberIdByte":
+                if(stringItemsSketchHashMap.isEmpty()) {
+
+
+                    ItemsSketch<String> subscriberIdByteItemsSketch = new ItemsSketch<>(1048576);
+
+                    subscriberIdByteItemsSketch.update(Dimension.setSubscriberIdDimension(entity),entity.getCommon_c2s_byte_num()+entity.getCommon_s2c_byte_num());
+
+
+                    CollectionValue collectionValue = new CollectionValue(entity,"bytes");
+                    collectionValue.setSource(entity.getCommon_subscriber_id());
+                    HashMap<String, CollectionValue> stringCollectionValueHashMap = new HashMap<>();
+                    stringCollectionValueHashMap.put(Dimension.setSubscriberIdDimension(entity),collectionValue);
+
+
+
+
+
+                    DimensionItemsSketch subscriberIdByteDimensionItemsSketch = new DimensionItemsSketch(Dimension.SUBSCRIBERID,subscriberIdByteItemsSketch,stringCollectionValueHashMap);
+
+
+                    stringItemsSketchHashMap.put("subscriberIdByte",subscriberIdByteDimensionItemsSketch);
 
 
                 }else {
 
-                    stringItemsSketchHashMap.get("sevenByte").getItemsSketch().update(Dimension.setSevenDimension(cnRecordLog),cnRecordLog.getCommon_c2s_byte_num()+cnRecordLog.getCommon_s2c_byte_num());
+                    stringItemsSketchHashMap.get("subscriberIdByte").getItemsSketch().update(Dimension.setSubscriberIdDimension(entity),entity.getCommon_c2s_byte_num()+entity.getCommon_s2c_byte_num());
 
-                    CollectionValue sevenByte = stringItemsSketchHashMap.get("sevenByte").getStringCollectionValueHashMap().get(Dimension.setSevenDimension(cnRecordLog));
+                    CollectionValue subscriberIdByte = stringItemsSketchHashMap.get("subscriberIdByte").getStringCollectionValueHashMap().get(Dimension.setSubscriberIdDimension(entity));
 
 
-                    if (sevenByte==null){
+                    if (subscriberIdByte==null){
 
-                        CollectionValue collectionValue = new CollectionValue(cnRecordLog,"bytes");
-                        collectionValue.setSource(cnRecordLog.getCommon_app_label());
+                        CollectionValue collectionValue = new CollectionValue(entity,"bytes");
+                        collectionValue.setSource(entity.getCommon_subscriber_id());
 
-                        stringItemsSketchHashMap.get("sevenByte").getStringCollectionValueHashMap().put(Dimension.setSevenDimension(cnRecordLog),collectionValue);
+                        stringItemsSketchHashMap.get("subscriberIdByte").getStringCollectionValueHashMap().put(Dimension.setSubscriberIdDimension(entity),collectionValue);
 
                     }else {//做加和
 
-                        sevenByte.getCollectionValue(sevenByte,cnRecordLog);
+                        subscriberIdByte.getCollectionValue(subscriberIdByte,entity);
 
-                        stringItemsSketchHashMap.get("sevenByte").getStringCollectionValueHashMap().put(Dimension.setSevenDimension(cnRecordLog),sevenByte);
+                        stringItemsSketchHashMap.get("subscriberIdByte").getStringCollectionValueHashMap().put(Dimension.setSubscriberIdDimension(entity),subscriberIdByte);
+
+
+                    }
+
+
+
+
+
+
+                }
+
+                break;
+            case "appLabelByte":
+                if(stringItemsSketchHashMap.isEmpty()) {
+
+
+                    ItemsSketch<String> appLabelByteItemsSketch = new ItemsSketch<>(1048576);
+
+
+                    appLabelByteItemsSketch.update(Dimension.setAppLabelDimension(entity),entity.getCommon_c2s_byte_num()+entity.getCommon_s2c_byte_num());
+
+
+                    CollectionValue collectionValue = new CollectionValue(entity,"bytes");
+                    collectionValue.setSource(entity.getCommon_app_label());
+                    HashMap<String, CollectionValue> stringCollectionValueHashMap = new HashMap<>();
+                    stringCollectionValueHashMap.put(Dimension.setAppLabelDimension(entity),collectionValue);
+
+
+
+
+
+                    DimensionItemsSketch appLabelByteDimensionItemsSketch = new DimensionItemsSketch(Dimension.APPLABEL,appLabelByteItemsSketch,stringCollectionValueHashMap);
+
+
+                    stringItemsSketchHashMap.put("appLabelByte",appLabelByteDimensionItemsSketch);
+
+
+                }else {
+
+                    stringItemsSketchHashMap.get("appLabelByte").getItemsSketch().update(Dimension.setAppLabelDimension(entity),entity.getCommon_c2s_byte_num()+entity.getCommon_s2c_byte_num());
+
+                    CollectionValue appLabelByte = stringItemsSketchHashMap.get("appLabelByte").getStringCollectionValueHashMap().get(Dimension.setAppLabelDimension(entity));
+
+
+                    if (appLabelByte==null){
+
+                        CollectionValue collectionValue = new CollectionValue(entity,"bytes");
+                        collectionValue.setSource(entity.getCommon_app_label());
+
+                        stringItemsSketchHashMap.get("appLabelByte").getStringCollectionValueHashMap().put(Dimension.setAppLabelDimension(entity),collectionValue);
+
+                    }else {//做加和
+
+                        appLabelByte.getCollectionValue(appLabelByte,entity);
+
+                        stringItemsSketchHashMap.get("appLabelByte").getStringCollectionValueHashMap().put(Dimension.setAppLabelDimension(entity),appLabelByte);
 
 
                     }
