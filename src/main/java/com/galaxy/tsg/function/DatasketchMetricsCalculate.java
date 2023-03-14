@@ -1,6 +1,5 @@
 package com.galaxy.tsg.function;
 
-import com.alibaba.fastjson.JSONObject;
 import com.galaxy.tsg.pojo.*;
 import org.apache.datasketches.frequencies.ErrorType;
 import org.apache.datasketches.frequencies.ItemsSketch;
@@ -53,16 +52,16 @@ public class DatasketchMetricsCalculate extends ProcessWindowFunction<
         for (Entity entity:iterable){
 
             //处理session
-            sessionItemsSketch.update(Dimension.setDimension(entity,key),entity.getCommon_sessions());
-            sessionResultEntityHashMap.put(Dimension.setDimension(entity,key),enrichessionResult(context.window().getEnd() / 1000, entity));
+            sessionItemsSketch.update(Dimension.setDimensionValue(entity,key),entity.getCommon_sessions());
+            sessionResultEntityHashMap.put(Dimension.setDimensionValue(entity,key),enrichessionResult(context.window().getEnd() / 1000, entity));
 
             //处理pkt
-            pktItemsSketch.update(Dimension.setDimension(entity,key),entity.getCommon_c2s_pkt_num()+entity.getCommon_s2c_pkt_num());
-            packetResultEntityHashMap.put(Dimension.setDimension(entity,key),enrichPacketResult(context.window().getEnd() / 1000, entity));
+            pktItemsSketch.update(Dimension.setDimensionValue(entity,key),entity.getCommon_c2s_pkt_num()+entity.getCommon_s2c_pkt_num());
+            packetResultEntityHashMap.put(Dimension.setDimensionValue(entity,key),enrichPacketResult(context.window().getEnd() / 1000, entity));
 
             //处理byte
-            byteItemsSketch.update(Dimension.setDimension(entity,key),entity.getCommon_c2s_byte_num()+entity.getCommon_s2c_byte_num());
-            byteResultEntityHashMap.put(Dimension.setDimension(entity,key),enrichByteResult(context.window().getEnd() / 1000, entity));
+            byteItemsSketch.update(Dimension.setDimensionValue(entity,key),entity.getCommon_c2s_byte_num()+entity.getCommon_s2c_byte_num());
+            byteResultEntityHashMap.put(Dimension.setDimensionValue(entity,key),enrichByteResult(context.window().getEnd() / 1000, entity));
 
 
         }

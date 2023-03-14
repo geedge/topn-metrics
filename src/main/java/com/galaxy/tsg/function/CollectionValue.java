@@ -24,6 +24,13 @@ public class CollectionValue {
     public String order_by;
     public String source;
 
+    private String destination ;
+    private String domain;
+    private String subscriber_id;
+    private String app_name;
+
+
+
     public CollectionValue(long c2s_byte_num, long c2s_pkt_num, long s2c_byte_num, long s2c_pkt_num, long session_num, long stat_time, long vsys_id, String data_center, String device_group, String order_by, String source) {
         this.c2s_byte_num = c2s_byte_num;
         this.c2s_pkt_num = c2s_pkt_num;
@@ -39,7 +46,7 @@ public class CollectionValue {
     }
 
 
-    public CollectionValue(Entity entity,String key ) {
+    public CollectionValue(Entity entity,String orderby,String key ) {
 
 
 
@@ -52,8 +59,58 @@ public class CollectionValue {
         this.vsys_id = entity.getCommon_vsys_id();
         this.data_center = entity.getCommon_data_center();
         this.device_group = entity.getCommon_device_group();
-        this.order_by = key;
-//        this.source = source;//分情况
+        this.order_by = orderby;
+
+        this.source = entity.getCommon_client_ip();//分情况????????????
+
+
+        switch(key) {
+            case "common_client_ip":
+                this.source =entity.getCommon_client_ip();
+                break;
+            case "common_server_ip":
+                this.destination =entity.getCommon_server_ip();
+                break;
+            case "common_internal_ip":
+                this.source =entity.getCommon_internal_ip();
+                break;
+            case "common_external_ip":
+                this.destination =entity.getCommon_external_ip();
+                break;
+            case "common_subscriber_id":
+                this.subscriber_id =entity.getCommon_subscriber_id();
+
+                break;
+
+            case "common_app_label":
+                this.app_name =entity.getCommon_app_label();
+                break;
+
+            default:
+
+
+        }
+
+
+
+
+    }
+
+
+    public CollectionValue(Entity entity,String orderby ) {
+
+
+        this.c2s_byte_num = entity.getCommon_c2s_byte_num();
+        this.c2s_pkt_num = entity.getCommon_c2s_pkt_num();
+        this.s2c_byte_num = entity.getCommon_s2c_byte_num();
+        this.s2c_pkt_num = entity.getCommon_s2c_pkt_num();
+        this.session_num = entity.getCommon_sessions();
+        this.stat_time = System.currentTimeMillis() / 1000;
+        this.vsys_id = entity.getCommon_vsys_id();
+        this.data_center = entity.getCommon_data_center();
+        this.device_group = entity.getCommon_device_group();
+        this.order_by = orderby;
+
 
     }
 
@@ -171,6 +228,38 @@ public class CollectionValue {
 
     }
 
+
+    public String getDestination() {
+        return destination;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
+    }
+
+    public String getSubscriber_id() {
+        return subscriber_id;
+    }
+
+    public void setSubscriber_id(String subscriber_id) {
+        this.subscriber_id = subscriber_id;
+    }
+
+    public String getApp_name() {
+        return app_name;
+    }
+
+    public void setApp_name(String app_name) {
+        this.app_name = app_name;
+    }
 
     @Override
     public String toString() {

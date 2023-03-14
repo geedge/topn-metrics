@@ -79,7 +79,7 @@ public class Dimension {
 
 
 
-    public static String setDimension(Entity entity,String key){
+    public static String setDimensionValue(Entity entity, String key){
 
         String dimension = "";
 
@@ -120,6 +120,44 @@ public class Dimension {
 
 
 
+    public static String setDimensionTag(String key){
+
+        String dimension = "";
+
+        switch (key) {
+            case "common_client_ip":
+                dimension = CLIENTIP;
+                break;
+            case "common_server_ip":
+                dimension = SERVERIP;
+                break;
+            case "common_internal_ip":
+                dimension = INTERNALIP;
+                break;
+            case "common_external_ip":
+                dimension = EXTERNALIP;
+                break;
+            case "http_domain":
+                dimension = DOMAIN;
+                break;
+
+            case "common_subscriber_id":
+                dimension = SUBSCRIBERID;
+                break;
+
+            case "common_app_label":
+                dimension = APPLABEL;
+                break;
+
+            default:
+
+        }
+
+
+
+
+        return dimension;
+    }
 
 
 
