@@ -87,6 +87,17 @@ public  class TopNHotItems extends KeyedProcessFunction<Tuple1<String>, ResultEn
                 }
                 break;
             default:
+                if (byteOrderEntity.size() < topSize) {
+                    byteOrderEntity.add(objectEntity.getByteResultEntity());
+                } else {
+                    if (byteOrderEntity.peek() != null) {
+                        ByteResultEntity res=byteOrderEntity.peek();
+                        if ((res.getC2s_byte_num()+res.getS2c_byte_num()) <= (objectEntity.getByteResultEntity().getS2c_byte_num()+objectEntity.getByteResultEntity().getC2s_byte_num())) {
+                            byteOrderEntity.poll();
+                            byteOrderEntity.add(objectEntity.getByteResultEntity());
+                        }
+                    }
+                }
         }
 
         //注册 windowEnd+1 的 EventTime Timer, 当触发时，说明收集好了所有 windowEnd的商品数据

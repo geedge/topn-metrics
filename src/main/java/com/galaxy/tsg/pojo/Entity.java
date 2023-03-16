@@ -27,7 +27,17 @@ public class Entity implements Serializable {
     public long common_s2c_byte_num ;
     public String key_by;
 
+    public int count;
+
     public Entity() {
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 
     public String getKey_by() {
