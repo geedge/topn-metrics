@@ -1,18 +1,17 @@
 package com.galaxy.tsg.function;
 
-import com.galaxy.tsg.pojo.Entity;
+import com.galaxy.tsg.pojo.transformEntity;
 import org.apache.flink.api.common.functions.ReduceFunction;
 
-public class metricsAggregationReduce implements ReduceFunction<Entity> {
+public class metricsAggregationReduce implements ReduceFunction<transformEntity> {
 
     @Override
-    public Entity reduce(Entity value1, Entity value2) throws Exception {
-        value1.setCommon_c2s_pkt_num(value1.getCommon_c2s_pkt_num() + value2.getCommon_c2s_pkt_num());
-        value1.setCommon_s2c_pkt_num(value1.getCommon_s2c_pkt_num() + value2.getCommon_s2c_pkt_num());
-        value1.setCommon_c2s_byte_num(value1.getCommon_c2s_byte_num() + value2.getCommon_c2s_byte_num());
-        value1.setCommon_s2c_byte_num(value1.getCommon_s2c_byte_num() + value2.getCommon_s2c_byte_num());
-        value1.setCommon_sessions(value1.getCommon_sessions()+value2.getCommon_sessions());
-
+    public transformEntity reduce(transformEntity value1, transformEntity value2) throws Exception {
+        value1.setOut_pkts(value1.getOut_pkts() + value2.getOut_pkts());
+        value1.setOut_bytes(value1.getOut_bytes() + value2.getOut_bytes());
+        value1.setIn_bytes(value1.getIn_bytes() + value2.getIn_bytes());
+        value1.setIn_pkts(value1.getIn_pkts() + value2.getIn_pkts());
+        value1.setSessions(value1.getSessions()+value2.getSessions());
         return value1;
     }
 }

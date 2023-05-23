@@ -9,7 +9,7 @@ import java.util.Properties;
  * @author Administrator
  */
 
-public final class CommonConfigurations {
+public final class commonConfigurations {
 
     private static Properties propService = new Properties();
 
@@ -54,7 +54,7 @@ public final class CommonConfigurations {
 
     static {
         try {
-            propService.load(CommonConfigurations.class.getClassLoader().getResourceAsStream("common.properties"));
+            propService.load(commonConfigurations.class.getClassLoader().getResourceAsStream("common.properties"));
         } catch (Exception e) {
             propService = null;
         }

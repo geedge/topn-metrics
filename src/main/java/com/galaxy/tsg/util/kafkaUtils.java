@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
-public class KafkaUtils {
+public class kafkaUtils {
 
 
     public static Properties getKafkaSourceProperty() {
@@ -22,21 +22,21 @@ public class KafkaUtils {
         properties.setProperty("max.poll.records", commonConfig.KAFKA_CONSUMER_MAX_POLL_RECORD);
         properties.setProperty("max.partition.fetch.bytes", commonConfig.KAFKA_CONSUMER_MAX_PARTITION_FETCH_BYTES);
 
-        switch (commonConfig.KAFKA_SECURITY) {
+        switch (commonConfig.KAFKA_CONSUMER_SECURITY) {
             case 1:
                 properties.put("security.protocol", "SSL");
                 properties.put(SslConfigs.SSL_ENDPOINT_IDENTIFICATION_ALGORITHM_CONFIG, "");
-                properties.put("ssl.keystore.location", commonConfig.TOOLS_LIBRARY + "keystore.jks");
-                properties.put("ssl.keystore.password", commonConfig.KAFKA_PIN);
-                properties.put("ssl.truststore.location", commonConfig.TOOLS_LIBRARY + "truststore.jks");
-                properties.put("ssl.truststore.password", commonConfig.KAFKA_PIN);
-                properties.put("ssl.key.password", commonConfig.KAFKA_PIN);
+                properties.put("ssl.keystore.location", commonConfig.TOOLS_CONSUMER_LIBRARY + "keystore.jks");
+                properties.put("ssl.keystore.password", commonConfig.KAFKA_CONSUMER_PIN);
+                properties.put("ssl.truststore.location", commonConfig.TOOLS_CONSUMER_LIBRARY + "truststore.jks");
+                properties.put("ssl.truststore.password", commonConfig.KAFKA_CONSUMER_PIN);
+                properties.put("ssl.key.password", commonConfig.KAFKA_CONSUMER_PIN);
                 break;
             case 2:
                 properties.put("security.protocol", "SASL_PLAINTEXT");
                 properties.put("sasl.mechanism", "PLAIN");
                 properties.put("sasl.jaas.config", "org.apache.kafka.common.security.plain.PlainLoginModule required username="
-                        + commonConfig.KAFKA_USER + " password=" + commonConfig.KAFKA_PIN + ";");
+                        + commonConfig.KAFKA_CONSUMER_USER + " password=" + commonConfig.KAFKA_CONSUMER_PIN + ";");
                 break;
             default:
         }
@@ -57,21 +57,21 @@ public class KafkaUtils {
         properties.put("max.request.size", commonConfig.KAFKA_PRODUCER_MAX_REQUEST_SIZE);
         properties.put("compression.type", commonConfig.KAFKA_PRODUCER_COMPRESSION_TYPE);
 
-        switch (commonConfig.KAFKA_SECURITY) {
+        switch (commonConfig.KAFKA_PRODUCER_SECURITY) {
             case 1:
                 properties.put("security.protocol", "SSL");
                 properties.put(SslConfigs.SSL_ENDPOINT_IDENTIFICATION_ALGORITHM_CONFIG, "");
-                properties.put("ssl.keystore.location", commonConfig.TOOLS_LIBRARY + "keystore.jks");
-                properties.put("ssl.keystore.password", commonConfig.KAFKA_PIN);
-                properties.put("ssl.truststore.location", commonConfig.TOOLS_LIBRARY + "truststore.jks");
-                properties.put("ssl.truststore.password", commonConfig.KAFKA_PIN);
-                properties.put("ssl.key.password", commonConfig.KAFKA_PIN);
+                properties.put("ssl.keystore.location", commonConfig.TOOLS_PRODUCER_LIBRARY + "keystore.jks");
+                properties.put("ssl.keystore.password", commonConfig.KAFKA_PRODUCER_PIN);
+                properties.put("ssl.truststore.location", commonConfig.TOOLS_PRODUCER_LIBRARY + "truststore.jks");
+                properties.put("ssl.truststore.password", commonConfig.KAFKA_PRODUCER_PIN);
+                properties.put("ssl.key.password", commonConfig.KAFKA_PRODUCER_PIN);
                 break;
             case 2:
                 properties.put("security.protocol", "SASL_PLAINTEXT");
                 properties.put("sasl.mechanism", "PLAIN");
                 properties.put("sasl.jaas.config", "org.apache.kafka.common.security.plain.PlainLoginModule required username="
-                        + commonConfig.KAFKA_USER + " password=" + commonConfig.KAFKA_PIN + ";");
+                        + commonConfig.KAFKA_PRODUCER_USER + " password=" + commonConfig.KAFKA_PRODUCER_PIN + ";");
                 break;
             default:
         }
