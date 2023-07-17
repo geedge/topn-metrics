@@ -20,7 +20,7 @@ public class metricsCalculate extends ProcessWindowFunction<
     private PriorityQueue<packetResultEntity> packetOrderEntity;
     private PriorityQueue<byteResultEntity> byteOrderEntity;
 
-    private long windowEndTimestamp;
+    private long windowStartTimestamp;
 
     public metricsCalculate(int i, String key) {
         this.key = key;
@@ -35,7 +35,7 @@ public class metricsCalculate extends ProcessWindowFunction<
                         Context context,
                         Iterable<transformEntity> elements, Collector<resultEntity> out) throws Exception {
 
-        if (context.window().getEnd() == windowEndTimestamp) {
+        if (context.window().getStart() == windowStartTimestamp) {
 
 
 
@@ -45,37 +45,37 @@ public class metricsCalculate extends ProcessWindowFunction<
                 transformEntity objectTransformEntity = elements.iterator().next();
 
                 if (sessionOrderEntity.size() < topSize) {
-                    sessionOrderEntity.add(enrichessionResult(context.window().getEnd(), objectTransformEntity));
+                    sessionOrderEntity.add(enrichessionResult(context.window().getStart(), objectTransformEntity));
                 } else {
                     if (sessionOrderEntity.peek() != null) {
                         sessionResultEntity res = sessionOrderEntity.peek();
                         if (res.getSessions() <= objectTransformEntity.getSessions()) {
                             sessionOrderEntity.poll();
-                            sessionOrderEntity.add(enrichessionResult(context.window().getEnd(), objectTransformEntity));
+                            sessionOrderEntity.add(enrichessionResult(context.window().getStart(), objectTransformEntity));
                         }
                     }
                 }
 
                 if (packetOrderEntity.size() < topSize) {
-                    packetOrderEntity.add(enrichPacketResult(context.window().getEnd(), objectTransformEntity));
+                    packetOrderEntity.add(enrichPacketResult(context.window().getStart(), objectTransformEntity));
                 } else {
                     if (packetOrderEntity.peek() != null) {
                         packetResultEntity res = packetOrderEntity.peek();
                         if ((res.getIn_pkts() + res.getOut_pkts()) <= (objectTransformEntity.getIn_pkts() + objectTransformEntity.getOut_pkts())) {
                             packetOrderEntity.poll();
-                            packetOrderEntity.add(enrichPacketResult(context.window().getEnd() , objectTransformEntity));
+                            packetOrderEntity.add(enrichPacketResult(context.window().getStart() , objectTransformEntity));
                         }
                     }
                 }
 
                 if (byteOrderEntity.size() < topSize) {
-                    byteOrderEntity.add(enrichByteResult(context.window().getEnd(), objectTransformEntity));
+                    byteOrderEntity.add(enrichByteResult(context.window().getStart(), objectTransformEntity));
                 } else {
                     if (byteOrderEntity.peek() != null) {
                         byteResultEntity res = byteOrderEntity.peek();
                         if ((res.getIn_bytes() + res.getOut_bytes()) <= (objectTransformEntity.getIn_bytes() + objectTransformEntity.getOut_bytes())) {
                             byteOrderEntity.poll();
-                            byteOrderEntity.add(enrichByteResult(context.window().getEnd(), objectTransformEntity));
+                            byteOrderEntity.add(enrichByteResult(context.window().getStart(), objectTransformEntity));
                         }
                     }
                 }
@@ -83,13 +83,12 @@ public class metricsCalculate extends ProcessWindowFunction<
 
             }
         } else {
-            windowEndTimestamp = context.window().getEnd();
 
             for (com.galaxy.tsg.pojo.sessionResultEntity sessionResultEntity : sessionOrderEntity) {
 
                 resultEntity en = new resultEntity();
                 en.setOrder_by("sessions");
-                en.setStat_time(context.window().getEnd());
+                en.setStat_time(windowStartTimestamp);
                 en.setSessionResultEntity(sessionResultEntity);
                 out.collect(en);
             }
@@ -99,7 +98,7 @@ public class metricsCalculate extends ProcessWindowFunction<
             for (com.galaxy.tsg.pojo.packetResultEntity packetResultEntity : packetOrderEntity) {
                 resultEntity en = new resultEntity();
                 en.setOrder_by("packets");
-                en.setStat_time(context.window().getEnd());
+                en.setStat_time(windowStartTimestamp);
                 en.setPacketResultEntity(packetResultEntity);
                 out.collect(en);
             }
@@ -108,12 +107,57 @@ public class metricsCalculate extends ProcessWindowFunction<
             for (com.galaxy.tsg.pojo.byteResultEntity byteResultEntity : byteOrderEntity) {
                 resultEntity en = new resultEntity();
                 en.setOrder_by("bytes");
-                en.setStat_time(context.window().getEnd());
+                en.setStat_time(windowStartTimestamp);
                 en.setByteResultEntity(byteResultEntity);
                 out.collect(en);
             }
             byteOrderEntity.clear();
+            windowStartTimestamp = context.window().getStart();
 
+
+            if (elements.iterator().hasNext()) {
+
+
+                transformEntity objectTransformEntity = elements.iterator().next();
+
+                if (sessionOrderEntity.size() < topSize) {
+                    sessionOrderEntity.add(enrichessionResult(context.window().getStart(), objectTransformEntity));
+                } else {
+                    if (sessionOrderEntity.peek() != null) {
+                        sessionResultEntity res = sessionOrderEntity.peek();
+                        if (res.getSessions() <= objectTransformEntity.getSessions()) {
+                            sessionOrderEntity.poll();
+                            sessionOrderEntity.add(enrichessionResult(context.window().getStart(), objectTransformEntity));
+                        }
+                    }
+                }
+
+                if (packetOrderEntity.size() < topSize) {
+                    packetOrderEntity.add(enrichPacketResult(context.window().getStart(), objectTransformEntity));
+                } else {
+                    if (packetOrderEntity.peek() != null) {
+                        packetResultEntity res = packetOrderEntity.peek();
+                        if ((res.getIn_pkts() + res.getOut_pkts()) <= (objectTransformEntity.getIn_pkts() + objectTransformEntity.getOut_pkts())) {
+                            packetOrderEntity.poll();
+                            packetOrderEntity.add(enrichPacketResult(context.window().getStart() , objectTransformEntity));
+                        }
+                    }
+                }
+
+                if (byteOrderEntity.size() < topSize) {
+                    byteOrderEntity.add(enrichByteResult(context.window().getStart(), objectTransformEntity));
+                } else {
+                    if (byteOrderEntity.peek() != null) {
+                        byteResultEntity res = byteOrderEntity.peek();
+                        if ((res.getIn_bytes() + res.getOut_bytes()) <= (objectTransformEntity.getIn_bytes() + objectTransformEntity.getOut_bytes())) {
+                            byteOrderEntity.poll();
+                            byteOrderEntity.add(enrichByteResult(context.window().getStart(), objectTransformEntity));
+                        }
+                    }
+                }
+
+
+            }
         }
     }
 
