@@ -164,7 +164,7 @@ public class metricsCalculate extends ProcessWindowFunction<
     public byteResultEntity enrichByteResult(Long time, transformEntity objectTransformEntity) {
         byteResultEntity en = new byteResultEntity();
         en.setVsys_id(objectTransformEntity.getVsys_id());
-        en.setTimestamp(time);
+        en.setTimestamp_ms(time);
         en.setSessions(objectTransformEntity.getSessions());
         en.setOrder_by("bytes");
 
@@ -191,7 +191,7 @@ public class metricsCalculate extends ProcessWindowFunction<
 
         sessionResultEntity en = new sessionResultEntity();
         en.setVsys_id(objectTransformEntity.getVsys_id());
-        en.setTimestamp(time);
+        en.setTimestamp_ms(time);
         en.setSessions(objectTransformEntity.getSessions());
         en.setOrder_by("sessions");
         en.setServer_ip(objectTransformEntity.getServer_ip());
@@ -214,7 +214,7 @@ public class metricsCalculate extends ProcessWindowFunction<
     public packetResultEntity enrichPacketResult(Long time, transformEntity objectTransformEntity) {
         packetResultEntity en = new packetResultEntity();
         en.setVsys_id(objectTransformEntity.getVsys_id());
-        en.setTimestamp(time);
+        en.setTimestamp_ms(time);
         en.setSessions(objectTransformEntity.getSessions());
         en.setOrder_by("packets");
         en.setServer_ip(objectTransformEntity.getServer_ip());

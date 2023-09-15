@@ -6,7 +6,7 @@ public class byteResultEntity implements Comparable<byteResultEntity> {
 
 
 
-    private long timestamp ;
+    private long timestamp_ms;
 
 
     private String fqdn;
@@ -38,12 +38,12 @@ public class byteResultEntity implements Comparable<byteResultEntity> {
         this.order_by = order_by;
     }
 
-    public long getTimestamp() {
-        return timestamp;
+    public long getTimestamp_ms() {
+        return timestamp_ms;
     }
 
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
+    public void setTimestamp_ms(long timestamp_ms) {
+        this.timestamp_ms = timestamp_ms;
     }
 
     public String getFqdn() {

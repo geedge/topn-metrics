@@ -39,7 +39,7 @@ public class Toptask {
         DataStream<String> sourceForSession = env.addSource(getKafkaConsumer(KAFKA_CONSUMER_TOPIC)).setParallelism(KAFKA_CONSUMER_PARALLELISM);
         WatermarkStrategy<transformEntity> strategyForSession = WatermarkStrategy
                 .<transformEntity>forBoundedOutOfOrderness(Duration.ofSeconds(WATERMARK_TIME))
-                .withTimestampAssigner((transformEntity, timestamp) -> transformEntity.getTimestamp() * 1000);
+                .withTimestampAssigner((transformEntity, timestamp) -> transformEntity.getTimestamp()*1000);
 
 
         SingleOutputStreamOperator<transformEntity> inputForSession = sourceForSession.map(new MapFunction<String, transformEntity>() {

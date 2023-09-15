@@ -6,7 +6,7 @@ public class metricsEntity {
     private String name;
     private Map<String,String> tags;
     private Map<String,Long>  fields;
-    private Long timestamp;
+    private Long timestamp_ms;
 
     public String getName() {
         return name;
@@ -32,11 +32,11 @@ public class metricsEntity {
         this.fields = fields;
     }
 
-    public Long getTimestamp() {
-        return timestamp;
+    public Long getTimestamp_ms() {
+        return timestamp_ms;
     }
 
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
+    public void setTimestamp_ms(Long timestamp_ms) {
+        this.timestamp_ms = timestamp_ms;
     }
 }

@@ -6,7 +6,7 @@
 
     <groupId>com.galaxy.tsg</groupId>
     <artifactId>topn-metrics-job</artifactId>
-    <version>23-07-10</version>
+    <version>23-09-14</version>
     <repositories>
 
         <repository>
@@ -181,7 +181,7 @@
                         </goals>
 
                         <configuration>
-                            <finalName>topn-metrics-job-23-07-10</finalName>
+                            <finalName>topn-metrics-job-23-09-14</finalName>
                             <filters>
                                 <filter>
                                     <!-- Do not copy the signatures in the META-INF folder.

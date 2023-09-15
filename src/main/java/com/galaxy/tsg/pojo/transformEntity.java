@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class transformEntity implements Serializable {
 
     public int ifError;
-    public long timestamp ;
+    public long timestamp;
 
 
     public String fqdn;

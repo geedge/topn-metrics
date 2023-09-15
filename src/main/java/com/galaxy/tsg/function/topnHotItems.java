@@ -60,9 +60,9 @@ public  class topnHotItems extends KeyedProcessFunction<Tuple1<String>, resultEn
 
                 break;
             case "packets":
-                if (packetOrderEntity.size() < topSize) {
-                    packetOrderEntity.add(objectEntity.getPacketResultEntity());
-                } else {
+                    if (packetOrderEntity.size() < topSize) {
+                        packetOrderEntity.add(objectEntity.getPacketResultEntity());
+                    } else {
                     if (packetOrderEntity.peek() != null) {
                         packetResultEntity res=packetOrderEntity.peek();
                         if ((res.getIn_pkts()+res.getOut_pkts()) <= (objectEntity.getPacketResultEntity().getIn_pkts()+objectEntity.getPacketResultEntity().getOut_pkts())) {
@@ -139,7 +139,7 @@ public  class topnHotItems extends KeyedProcessFunction<Tuple1<String>, resultEn
                     fields.put("in_pkts", en.getIn_pkts());
                     metricsEntity.setFields(fields);
                     metricsEntity.setTags(tags);
-                    metricsEntity.setTimestamp(en.getTimestamp());
+                    metricsEntity.setTimestamp_ms(en.getTimestamp_ms());
                     String jsonStr = JSONObject.toJSONString(metricsEntity);
                     out.collect(jsonStr);
 
@@ -190,7 +190,7 @@ public  class topnHotItems extends KeyedProcessFunction<Tuple1<String>, resultEn
             fields.put("in_pkts", en.getIn_pkts());
             metricsEntity.setFields(fields);
             metricsEntity.setTags(tags);
-            metricsEntity.setTimestamp(en.getTimestamp());
+            metricsEntity.setTimestamp_ms(en.getTimestamp_ms());
             String jsonStr = JSONObject.toJSONString(metricsEntity);
             out.collect(jsonStr);
 
@@ -244,7 +244,7 @@ public  class topnHotItems extends KeyedProcessFunction<Tuple1<String>, resultEn
             fields.put("in_pkts", en.getIn_pkts());
             metricsEntity.setFields(fields);
             metricsEntity.setTags(tags);
-            metricsEntity.setTimestamp(en.getTimestamp());
+            metricsEntity.setTimestamp_ms(en.getTimestamp_ms());
             String jsonStr = JSONObject.toJSONString(metricsEntity);
             out.collect(jsonStr);
 
