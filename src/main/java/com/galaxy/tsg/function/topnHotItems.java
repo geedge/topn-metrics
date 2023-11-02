@@ -13,7 +13,6 @@ import java.util.PriorityQueue;
 
 public  class topnHotItems extends KeyedProcessFunction<Tuple1<String>, resultEntity, String> {
     private final int topSize;
-    //  Set<ObjectEntity> allSet = new TreeSet<ObjectEntity>() ;
     private PriorityQueue<sessionResultEntity> sessionOrderEntity ;
     private PriorityQueue<packetResultEntity> packetOrderEntity ;
     private PriorityQueue<byteResultEntity> byteOrderEntity ;
@@ -89,7 +88,7 @@ public  class topnHotItems extends KeyedProcessFunction<Tuple1<String>, resultEn
 
         }
 
-        //注册 windowEnd+1 的 EventTime Timer, 当触发时，说明收集好了所有 windowEnd的商品数据
+        //注册 windowEnd+1 的 EventTime Timer, 当触发时，说明收集好了所有 数据
         context.timerService().registerEventTimeTimer(objectEntity.getStat_time() + 1);
     }
 

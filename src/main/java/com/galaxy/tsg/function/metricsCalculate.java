@@ -6,159 +6,44 @@ import org.apache.flink.streaming.api.functions.windowing.ProcessWindowFunction;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
 import org.apache.flink.util.Collector;
 
-import java.util.PriorityQueue;
-
 public class metricsCalculate extends ProcessWindowFunction<
         transformEntity,                  // 输入类型
         resultEntity,  // 输出类型
         Tuple5<String, Long, String, String, String>,                         // 键类型
         TimeWindow> {                   // 窗口类型
-    private final int topSize;
-    private final String key;
-    //  Set<ObjectEntity> allSet = new TreeSet<ObjectEntity>() ;
-    private PriorityQueue<sessionResultEntity> sessionOrderEntity;
-    private PriorityQueue<packetResultEntity> packetOrderEntity;
-    private PriorityQueue<byteResultEntity> byteOrderEntity;
 
-    private long windowStartTimestamp;
-
-    public metricsCalculate(int i, String key) {
-        this.key = key;
-        this.topSize = i;
-        this.sessionOrderEntity = new PriorityQueue<>();
-        this.packetOrderEntity = new PriorityQueue<>();
-        this.byteOrderEntity = new PriorityQueue<>();
-    }
 
     @Override
     public void process(Tuple5<String, Long, String, String, String> s,
                         Context context,
                         Iterable<transformEntity> elements, Collector<resultEntity> out) throws Exception {
 
-        if (context.window().getStart() == windowStartTimestamp) {
+
+        if (elements.iterator().hasNext()) {
+
+            transformEntity objectTransformEntity = elements.iterator().next();
+            resultEntity enSession = new resultEntity();
+            enSession.setOrder_by("sessions");
+            enSession.setStat_time(context.window().getStart());
+            enSession.setSessionResultEntity(enrichessionResult(context.window().getStart(), objectTransformEntity));
+            out.collect(enSession);
+
+            resultEntity enPacket = new resultEntity();
+            enPacket.setOrder_by("packets");
+            enPacket.setStat_time(context.window().getStart());
+            enPacket.setPacketResultEntity(enrichPacketResult(context.window().getStart() , objectTransformEntity));
+            out.collect(enPacket);
+
+            resultEntity enbyte = new resultEntity();
+            enbyte.setOrder_by("bytes");
+            enbyte.setStat_time(context.window().getStart());
+            enbyte.setByteResultEntity(enrichByteResult(context.window().getStart(), objectTransformEntity));
+            out.collect(enbyte);
 
 
-
-            if (elements.iterator().hasNext()) {
-
-
-                transformEntity objectTransformEntity = elements.iterator().next();
-
-                if (sessionOrderEntity.size() < topSize) {
-                    sessionOrderEntity.add(enrichessionResult(context.window().getStart(), objectTransformEntity));
-                } else {
-                    if (sessionOrderEntity.peek() != null) {
-                        sessionResultEntity res = sessionOrderEntity.peek();
-                        if (res.getSessions() <= objectTransformEntity.getSessions()) {
-                            sessionOrderEntity.poll();
-                            sessionOrderEntity.add(enrichessionResult(context.window().getStart(), objectTransformEntity));
-                        }
-                    }
-                }
-
-                if (packetOrderEntity.size() < topSize) {
-                    packetOrderEntity.add(enrichPacketResult(context.window().getStart(), objectTransformEntity));
-                } else {
-                    if (packetOrderEntity.peek() != null) {
-                        packetResultEntity res = packetOrderEntity.peek();
-                        if ((res.getIn_pkts() + res.getOut_pkts()) <= (objectTransformEntity.getIn_pkts() + objectTransformEntity.getOut_pkts())) {
-                            packetOrderEntity.poll();
-                            packetOrderEntity.add(enrichPacketResult(context.window().getStart() , objectTransformEntity));
-                        }
-                    }
-                }
-
-                if (byteOrderEntity.size() < topSize) {
-                    byteOrderEntity.add(enrichByteResult(context.window().getStart(), objectTransformEntity));
-                } else {
-                    if (byteOrderEntity.peek() != null) {
-                        byteResultEntity res = byteOrderEntity.peek();
-                        if ((res.getIn_bytes() + res.getOut_bytes()) <= (objectTransformEntity.getIn_bytes() + objectTransformEntity.getOut_bytes())) {
-                            byteOrderEntity.poll();
-                            byteOrderEntity.add(enrichByteResult(context.window().getStart(), objectTransformEntity));
-                        }
-                    }
-                }
-
-
-            }
-        } else {
-
-            for (com.galaxy.tsg.pojo.sessionResultEntity sessionResultEntity : sessionOrderEntity) {
-
-                resultEntity en = new resultEntity();
-                en.setOrder_by("sessions");
-                en.setStat_time(windowStartTimestamp);
-                en.setSessionResultEntity(sessionResultEntity);
-                out.collect(en);
-            }
-            sessionOrderEntity.clear();
-
-
-            for (com.galaxy.tsg.pojo.packetResultEntity packetResultEntity : packetOrderEntity) {
-                resultEntity en = new resultEntity();
-                en.setOrder_by("packets");
-                en.setStat_time(windowStartTimestamp);
-                en.setPacketResultEntity(packetResultEntity);
-                out.collect(en);
-            }
-            packetOrderEntity.clear();
-
-            for (com.galaxy.tsg.pojo.byteResultEntity byteResultEntity : byteOrderEntity) {
-                resultEntity en = new resultEntity();
-                en.setOrder_by("bytes");
-                en.setStat_time(windowStartTimestamp);
-                en.setByteResultEntity(byteResultEntity);
-                out.collect(en);
-            }
-            byteOrderEntity.clear();
-            windowStartTimestamp = context.window().getStart();
-
-
-            if (elements.iterator().hasNext()) {
-
-
-                transformEntity objectTransformEntity = elements.iterator().next();
-
-                if (sessionOrderEntity.size() < topSize) {
-                    sessionOrderEntity.add(enrichessionResult(context.window().getStart(), objectTransformEntity));
-                } else {
-                    if (sessionOrderEntity.peek() != null) {
-                        sessionResultEntity res = sessionOrderEntity.peek();
-                        if (res.getSessions() <= objectTransformEntity.getSessions()) {
-                            sessionOrderEntity.poll();
-                            sessionOrderEntity.add(enrichessionResult(context.window().getStart(), objectTransformEntity));
-                        }
-                    }
-                }
-
-                if (packetOrderEntity.size() < topSize) {
-                    packetOrderEntity.add(enrichPacketResult(context.window().getStart(), objectTransformEntity));
-                } else {
-                    if (packetOrderEntity.peek() != null) {
-                        packetResultEntity res = packetOrderEntity.peek();
-                        if ((res.getIn_pkts() + res.getOut_pkts()) <= (objectTransformEntity.getIn_pkts() + objectTransformEntity.getOut_pkts())) {
-                            packetOrderEntity.poll();
-                            packetOrderEntity.add(enrichPacketResult(context.window().getStart() , objectTransformEntity));
-                        }
-                    }
-                }
-
-                if (byteOrderEntity.size() < topSize) {
-                    byteOrderEntity.add(enrichByteResult(context.window().getStart(), objectTransformEntity));
-                } else {
-                    if (byteOrderEntity.peek() != null) {
-                        byteResultEntity res = byteOrderEntity.peek();
-                        if ((res.getIn_bytes() + res.getOut_bytes()) <= (objectTransformEntity.getIn_bytes() + objectTransformEntity.getOut_bytes())) {
-                            byteOrderEntity.poll();
-                            byteOrderEntity.add(enrichByteResult(context.window().getStart(), objectTransformEntity));
-                        }
-                    }
-                }
-
-
-            }
         }
+
+
     }
 
     public byteResultEntity enrichByteResult(Long time, transformEntity objectTransformEntity) {

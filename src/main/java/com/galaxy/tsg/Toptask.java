@@ -109,7 +109,7 @@ public class Toptask {
 
         SingleOutputStreamOperator<resultEntity> windowedStream = clientipdStream.keyBy(new groupBySelector("client_ip"))
                 .window(TumblingEventTimeWindows.of(Time.minutes(WINDOW_TIME_MINUTE)))
-                .reduce(new metricsAggregationReduce(), new metricsCalculate(TOP_LIMIT, "client_ip")).setParallelism(TASK_PARALLELISM).name("client_ip");;
+                .reduce(new metricsAggregationReduce(), new metricsCalculate()).setParallelism(TASK_PARALLELISM).name("client_ip");;
         DataStream<String> Stream = windowedStream.keyBy(new oneKeySelector())
                 .process(new topnHotItems(TOP_LIMIT)).setParallelism(ORDERBY_PARALLELISM);
         Stream.addSink(getKafkaSink(KAFKA_PRODUCER_TOPIC)).setParallelism(SINK_PARALLELISM);
@@ -127,7 +127,7 @@ public class Toptask {
 
         SingleOutputStreamOperator<resultEntity> windowedStreamForServerIp = serveripdStream.keyBy(new groupBySelector("server_ip"))
                 .window(TumblingEventTimeWindows.of(Time.minutes(WINDOW_TIME_MINUTE)))
-                .reduce(new metricsAggregationReduce(), new metricsCalculate(TOP_LIMIT, "server_ip")).setParallelism(TASK_PARALLELISM).name("server_ip");;
+                .reduce(new metricsAggregationReduce(), new metricsCalculate()).setParallelism(TASK_PARALLELISM).name("server_ip");;
         DataStream<String> StreamForServerIp = windowedStreamForServerIp.keyBy(new oneKeySelector())
                 .process(new topnHotItems(TOP_LIMIT)).setParallelism(ORDERBY_PARALLELISM);
         StreamForServerIp.addSink(getKafkaSink(KAFKA_PRODUCER_TOPIC)).setParallelism(SINK_PARALLELISM);
@@ -143,7 +143,7 @@ public class Toptask {
 
         SingleOutputStreamOperator<resultEntity> windowedStreamForInternal = internalStream.keyBy(new groupBySelector("internal_ip"))
                 .window(TumblingEventTimeWindows.of(Time.minutes(WINDOW_TIME_MINUTE)))
-                .reduce(new metricsAggregationReduce(), new metricsCalculate(TOP_LIMIT, "internal_ip")).setParallelism(TASK_PARALLELISM).name("internal_ip");;
+                .reduce(new metricsAggregationReduce(), new metricsCalculate()).setParallelism(TASK_PARALLELISM).name("internal_ip");;
         DataStream<String> StreamForInternal = windowedStreamForInternal.keyBy(new oneKeySelector())
                 .process(new topnHotItems(TOP_LIMIT)).setParallelism(ORDERBY_PARALLELISM);
         StreamForInternal.addSink(getKafkaSink(KAFKA_PRODUCER_TOPIC)).setParallelism(SINK_PARALLELISM);
@@ -159,7 +159,7 @@ public class Toptask {
 
         SingleOutputStreamOperator<resultEntity> windowedStreamForExternal = externalStream.keyBy(new groupBySelector("external_ip"))
                 .window(TumblingEventTimeWindows.of(Time.minutes(WINDOW_TIME_MINUTE)))
-                .reduce(new metricsAggregationReduce(), new metricsCalculate(TOP_LIMIT, "external_ip")).setParallelism(TASK_PARALLELISM).name("external_ip");;
+                .reduce(new metricsAggregationReduce(), new metricsCalculate()).setParallelism(TASK_PARALLELISM).name("external_ip");;
         DataStream<String> StreamForExternal = windowedStreamForExternal.keyBy(new oneKeySelector())
                 .process(new topnHotItems(TOP_LIMIT)).setParallelism(ORDERBY_PARALLELISM);
         StreamForExternal.addSink(getKafkaSink(KAFKA_PRODUCER_TOPIC)).setParallelism(SINK_PARALLELISM);
@@ -175,7 +175,7 @@ public class Toptask {
 
         SingleOutputStreamOperator<resultEntity> windowedStreamForDomain = domainStream.keyBy(new groupBySelector("server_domain"))
                 .window(TumblingEventTimeWindows.of(Time.minutes(WINDOW_TIME_MINUTE)))
-                .reduce(new metricsAggregationReduce(), new metricsCalculate(TOP_LIMIT, "server_domain")).setParallelism(TASK_PARALLELISM).name("server_domain");;
+                .reduce(new metricsAggregationReduce(), new metricsCalculate()).setParallelism(TASK_PARALLELISM).name("server_domain");;
         DataStream<String> StreamForDomain = windowedStreamForDomain.keyBy(new oneKeySelector())
                 .process(new topnHotItems(TOP_LIMIT)).setParallelism(ORDERBY_PARALLELISM);
         StreamForDomain.addSink(getKafkaSink(KAFKA_PRODUCER_TOPIC)).setParallelism(SINK_PARALLELISM);
@@ -190,7 +190,7 @@ public class Toptask {
         //common_subscriber_id聚合TOP
         SingleOutputStreamOperator<resultEntity> windowedStreamForUser = userStream.keyBy(new groupBySelector("subscriber_id"))
                 .window(TumblingEventTimeWindows.of(Time.minutes(WINDOW_TIME_MINUTE)))
-                .reduce(new metricsAggregationReduce(), new metricsCalculate(TOP_LIMIT, "subscriber_id")).setParallelism(TASK_PARALLELISM).name("subscriber_id");;
+                .reduce(new metricsAggregationReduce(), new metricsCalculate()).setParallelism(TASK_PARALLELISM).name("subscriber_id");;
         DataStream<String> StreamForUser = windowedStreamForUser.keyBy(new oneKeySelector())
                 .process(new topnHotItems(TOP_LIMIT)).setParallelism(ORDERBY_PARALLELISM);
         StreamForUser.addSink(getKafkaSink(KAFKA_PRODUCER_TOPIC)).setParallelism(SINK_PARALLELISM);
@@ -204,7 +204,7 @@ public class Toptask {
 
         SingleOutputStreamOperator<resultEntity> windowedStreamForFqdn = fqdnStream.keyBy(new groupBySelector("server_fqdn"))
                 .window(TumblingEventTimeWindows.of(Time.minutes(WINDOW_TIME_MINUTE)))
-                .reduce(new metricsAggregationReduce(), new metricsCalculate(TOP_LIMIT, "server_fqdn")).setParallelism(TASK_PARALLELISM).name("server_fqdn");
+                .reduce(new metricsAggregationReduce(), new metricsCalculate()).setParallelism(TASK_PARALLELISM).name("server_fqdn");
         DataStream<String> StreamForFqdn = windowedStreamForFqdn.keyBy(new oneKeySelector())
                 .process(new topnHotItems(TOP_LIMIT)).setParallelism(ORDERBY_PARALLELISM);
         StreamForFqdn.addSink(getKafkaSink(KAFKA_PRODUCER_TOPIC)).setParallelism(SINK_PARALLELISM);
