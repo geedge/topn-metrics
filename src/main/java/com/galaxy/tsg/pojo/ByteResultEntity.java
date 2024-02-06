@@ -1,6 +1,6 @@
 package com.galaxy.tsg.pojo;
 
-public class byteResultEntity implements Comparable<byteResultEntity> {
+public class ByteResultEntity implements Comparable<ByteResultEntity> {
 
 
 
@@ -191,7 +191,7 @@ public class byteResultEntity implements Comparable<byteResultEntity> {
     }
 
     @Override
-    public int compareTo(byteResultEntity per) {
+    public int compareTo(ByteResultEntity per) {
         if((this.out_bytes+this.in_bytes)>=(per.out_bytes+per.in_bytes)){
             return 1 ;
         }else{

@@ -1,6 +1,6 @@
 package com.galaxy.tsg.pojo;
 
-public class sessionResultEntity implements Comparable<sessionResultEntity> {
+public class SessionResultEntity implements Comparable<SessionResultEntity> {
 
 
 
@@ -189,7 +189,7 @@ public class sessionResultEntity implements Comparable<sessionResultEntity> {
     }
 
     @Override
-    public int compareTo(sessionResultEntity per) {
+    public int compareTo(SessionResultEntity per) {
         if(this.sessions>=per.sessions){
             return 1 ;
         }else{

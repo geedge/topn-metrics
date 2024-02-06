@@ -6,7 +6,7 @@
 
     <groupId>com.galaxy.tsg</groupId>
     <artifactId>topn-metrics-job</artifactId>
-    <version>23-11-01</version>
+    <version>24-01-16</version>
     <repositories>
 
         <repository>
@@ -21,11 +21,13 @@
         <hadoop.version>2.7.1</hadoop.version>
     </properties>
 
-    <dependencies>
+
+<dependencies>
+
         <dependency>
-            <groupId>com.zdjizhi</groupId>
+            <groupId>com.geedgenetworks</groupId>
             <artifactId>galaxy</artifactId>
-            <version>1.1.0</version>
+            <version>1.2.3</version>
             <exclusions>
                 <exclusion>
                     <artifactId>slf4j-log4j12</artifactId>
@@ -37,6 +39,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
@@ -149,6 +152,12 @@
             <version>3.3.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-test-utils_2.12</artifactId>
+            <version>${flink.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -181,7 +190,7 @@
                         </goals>
 
                         <configuration>
-                            <finalName>topn-metrics-job-23-11-01</finalName>
+                            <finalName>topn-metrics-job-24-01-16</finalName>
                             <filters>
                                 <filter>
                                     <!-- Do not copy the signatures in the META-INF folder.

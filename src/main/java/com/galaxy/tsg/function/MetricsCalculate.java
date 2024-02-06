@@ -6,9 +6,9 @@ import org.apache.flink.streaming.api.functions.windowing.ProcessWindowFunction;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
 import org.apache.flink.util.Collector;
 
-public class metricsCalculate extends ProcessWindowFunction<
-        transformEntity,                  // 输入类型
-        resultEntity,  // 输出类型
+public class MetricsCalculate extends ProcessWindowFunction<
+        TransformEntity,                  // 输入类型
+        ResultEntity,  // 输出类型
         Tuple5<String, Long, String, String, String>,                         // 键类型
         TimeWindow> {                   // 窗口类型
 
@@ -16,25 +16,25 @@ public class metricsCalculate extends ProcessWindowFunction<
     @Override
     public void process(Tuple5<String, Long, String, String, String> s,
                         Context context,
-                        Iterable<transformEntity> elements, Collector<resultEntity> out) throws Exception {
+                        Iterable<TransformEntity> elements, Collector<ResultEntity> out) throws Exception {
 
 
         if (elements.iterator().hasNext()) {
 
-            transformEntity objectTransformEntity = elements.iterator().next();
-            resultEntity enSession = new resultEntity();
+            TransformEntity objectTransformEntity = elements.iterator().next();
+            ResultEntity enSession = new ResultEntity();
             enSession.setOrder_by("sessions");
             enSession.setStat_time(context.window().getStart());
             enSession.setSessionResultEntity(enrichessionResult(context.window().getStart(), objectTransformEntity));
             out.collect(enSession);
 
-            resultEntity enPacket = new resultEntity();
+            ResultEntity enPacket = new ResultEntity();
             enPacket.setOrder_by("packets");
             enPacket.setStat_time(context.window().getStart());
             enPacket.setPacketResultEntity(enrichPacketResult(context.window().getStart() , objectTransformEntity));
             out.collect(enPacket);
 
-            resultEntity enbyte = new resultEntity();
+            ResultEntity enbyte = new ResultEntity();
             enbyte.setOrder_by("bytes");
             enbyte.setStat_time(context.window().getStart());
             enbyte.setByteResultEntity(enrichByteResult(context.window().getStart(), objectTransformEntity));
@@ -46,8 +46,8 @@ public class metricsCalculate extends ProcessWindowFunction<
 
     }
 
-    public byteResultEntity enrichByteResult(Long time, transformEntity objectTransformEntity) {
-        byteResultEntity en = new byteResultEntity();
+    public ByteResultEntity enrichByteResult(Long time, TransformEntity objectTransformEntity) {
+        ByteResultEntity en = new ByteResultEntity();
         en.setVsys_id(objectTransformEntity.getVsys_id());
         en.setTimestamp_ms(time);
         en.setSessions(objectTransformEntity.getSessions());
@@ -72,9 +72,9 @@ public class metricsCalculate extends ProcessWindowFunction<
 
     }
 
-    public sessionResultEntity enrichessionResult(Long time, transformEntity objectTransformEntity) {
+    public SessionResultEntity enrichessionResult(Long time, TransformEntity objectTransformEntity) {
 
-        sessionResultEntity en = new sessionResultEntity();
+        SessionResultEntity en = new SessionResultEntity();
         en.setVsys_id(objectTransformEntity.getVsys_id());
         en.setTimestamp_ms(time);
         en.setSessions(objectTransformEntity.getSessions());
@@ -96,8 +96,8 @@ public class metricsCalculate extends ProcessWindowFunction<
         return en;
     }
 
-    public packetResultEntity enrichPacketResult(Long time, transformEntity objectTransformEntity) {
-        packetResultEntity en = new packetResultEntity();
+    public PacketResultEntity enrichPacketResult(Long time, TransformEntity objectTransformEntity) {
+        PacketResultEntity en = new PacketResultEntity();
         en.setVsys_id(objectTransformEntity.getVsys_id());
         en.setTimestamp_ms(time);
         en.setSessions(objectTransformEntity.getSessions());

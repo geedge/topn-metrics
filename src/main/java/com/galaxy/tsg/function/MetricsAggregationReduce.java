@@ -1,12 +1,12 @@
 package com.galaxy.tsg.function;
 
-import com.galaxy.tsg.pojo.transformEntity;
+import com.galaxy.tsg.pojo.TransformEntity;
 import org.apache.flink.api.common.functions.ReduceFunction;
 
-public class metricsAggregationReduce implements ReduceFunction<transformEntity> {
+public class MetricsAggregationReduce implements ReduceFunction<TransformEntity> {
 
     @Override
-    public transformEntity reduce(transformEntity value1, transformEntity value2) throws Exception {
+    public TransformEntity reduce(TransformEntity value1, TransformEntity value2) throws Exception {
         value1.setOut_pkts(value1.getOut_pkts() + value2.getOut_pkts());
         value1.setOut_bytes(value1.getOut_bytes() + value2.getOut_bytes());
         value1.setIn_bytes(value1.getIn_bytes() + value2.getIn_bytes());

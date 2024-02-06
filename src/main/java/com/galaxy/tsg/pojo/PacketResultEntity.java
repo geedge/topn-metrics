@@ -1,60 +1,48 @@
 package com.galaxy.tsg.pojo;
 
-import java.io.Serializable;
-
-public class transformEntity implements Serializable {
-
-    public int ifError;
-    public long timestamp;
+public class PacketResultEntity implements Comparable<PacketResultEntity>, Cloneable {
 
 
-    public String fqdn;
-    public String server_ip ;
-    public String domain ;
-    public long vsys_id ;
-    public String device_group ;
-    public String client_ip ;
-    public String device_id;
-    public String data_center;
-    public String internal_ip;
-    public String external_ip;
-    public String subscriber_id;
-    public long sessions;
-    public long out_bytes;
-    public long in_bytes;
-    public long out_pkts ;
-    public long in_pkts ;
-    public String key_by;
-    public String l4_protocol;
+    private long timestamp_ms;
 
-    public transformEntity() {
+
+    private String fqdn;
+    private String server_ip ;
+    private String domain ;
+    private long vsys_id ;
+    private String device_group ;
+    private String client_ip ;
+    private String device_id;
+    private String data_center;
+    private String internal_ip;
+    private String external_ip;
+    private String subscriber_id;
+    private long sessions;
+    private long out_bytes;
+    private long in_bytes;
+    private long out_pkts ;
+    private long in_pkts ;
+    private String key_by;
+    private String l4_protocol;
+
+    private String order_by;
+
+
+    public String getOrder_by() {
+        return order_by;
     }
 
-    public String getL4_protocol() {
-        return l4_protocol;
+    public void setOrder_by(String order_by) {
+        this.order_by = order_by;
     }
 
-    public void setL4_protocol(String l4_protocol) {
-        this.l4_protocol = l4_protocol;
+    public long getTimestamp_ms() {
+        return timestamp_ms;
     }
 
-    public int getIfError() {
-        return ifError;
+    public void setTimestamp_ms(long timestamp_ms) {
+        this.timestamp_ms = timestamp_ms;
     }
-
-    public void setIfError(int ifError) {
-        this.ifError = ifError;
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-
 
     public String getFqdn() {
         return fqdn;
@@ -191,4 +179,35 @@ public class transformEntity implements Serializable {
     public void setKey_by(String key_by) {
         this.key_by = key_by;
     }
+
+    public String getL4_protocol() {
+        return l4_protocol;
+    }
+
+    public void setL4_protocol(String l4_protocol) {
+        this.l4_protocol = l4_protocol;
+    }
+
+    @Override
+    public int compareTo(PacketResultEntity per) {
+        if((this.out_pkts+this.in_pkts)>=(per.out_pkts+per.in_pkts)){
+            return 1 ;
+        }else{
+            return -1 ;
+        }
+    }
+
+
+ /*   @Override public Object clone() {
+        PacketResultEntity obj;
+        try {
+            obj = (PacketResultEntity) super.clone();
+        } catch (CloneNotSupportedException e) {
+            obj = new PacketResultEntity(this.source,this.vsys_id,this.session_num,this.c2s_pkt_num,this.s2c_pkt_num,this.c2s_byte_num,
+        this.s2c_byte_num,this.order_by,this.device_group,this.data_center,this.stat_time);
+        }
+        return obj;
+    }
+*/
+
 }

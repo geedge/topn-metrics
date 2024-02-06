@@ -1,9 +1,11 @@
 package com.galaxy.tsg.pojo;
 
-public class packetResultEntity implements Comparable<packetResultEntity>, Cloneable {
+import java.io.Serializable;
 
+public class TransformEntity implements Serializable,Cloneable {
 
-    private long timestamp_ms;
+    private int ifError;
+    private long timestamp;
 
 
     private String fqdn;
@@ -25,24 +27,34 @@ public class packetResultEntity implements Comparable<packetResultEntity>, Clone
     private String key_by;
     private String l4_protocol;
 
-    private String order_by;
-
-
-    public String getOrder_by() {
-        return order_by;
+    public TransformEntity() {
     }
 
-    public void setOrder_by(String order_by) {
-        this.order_by = order_by;
+    public String getL4_protocol() {
+        return l4_protocol;
     }
 
-    public long getTimestamp_ms() {
-        return timestamp_ms;
+    public void setL4_protocol(String l4_protocol) {
+        this.l4_protocol = l4_protocol;
     }
 
-    public void setTimestamp_ms(long timestamp_ms) {
-        this.timestamp_ms = timestamp_ms;
+    public int getIfError() {
+        return ifError;
     }
+
+    public void setIfError(int ifError) {
+        this.ifError = ifError;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+
 
     public String getFqdn() {
         return fqdn;
@@ -180,34 +192,8 @@ public class packetResultEntity implements Comparable<packetResultEntity>, Clone
         this.key_by = key_by;
     }
 
-    public String getL4_protocol() {
-        return l4_protocol;
-    }
-
-    public void setL4_protocol(String l4_protocol) {
-        this.l4_protocol = l4_protocol;
-    }
-
     @Override
-    public int compareTo(packetResultEntity per) {
-        if((this.out_pkts+this.in_pkts)>=(per.out_pkts+per.in_pkts)){
-            return 1 ;
-        }else{
-            return -1 ;
-        }
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
-
-
- /*   @Override public Object clone() {
-        PacketResultEntity obj;
-        try {
-            obj = (PacketResultEntity) super.clone();
-        } catch (CloneNotSupportedException e) {
-            obj = new PacketResultEntity(this.source,this.vsys_id,this.session_num,this.c2s_pkt_num,this.s2c_pkt_num,this.c2s_byte_num,
-        this.s2c_byte_num,this.order_by,this.device_group,this.data_center,this.stat_time);
-        }
-        return obj;
-    }
-*/
-
 }

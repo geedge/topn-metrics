@@ -2,7 +2,7 @@ package com.galaxy.tsg.pojo;
 
 import java.util.Map;
 
-public class metricsEntity {
+public class MetricsEntity {
     private String name;
     private Map<String,String> tags;
     private Map<String,Long>  fields;

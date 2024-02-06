@@ -11,14 +11,14 @@ import org.apache.flink.util.Collector;
 import java.util.Map;
 import java.util.PriorityQueue;
 
-public  class topnHotItems extends KeyedProcessFunction<Tuple1<String>, resultEntity, String> {
+public  class TopnHotItems extends KeyedProcessFunction<Tuple1<String>, ResultEntity, String> {
     private final int topSize;
-    private PriorityQueue<sessionResultEntity> sessionOrderEntity ;
-    private PriorityQueue<packetResultEntity> packetOrderEntity ;
-    private PriorityQueue<byteResultEntity> byteOrderEntity ;
+    private PriorityQueue<SessionResultEntity> sessionOrderEntity ;
+    private PriorityQueue<PacketResultEntity> packetOrderEntity ;
+    private PriorityQueue<ByteResultEntity> byteOrderEntity ;
 
 
-    public topnHotItems(int i) {
+    public TopnHotItems(int i) {
         this.topSize = i;
 
 
@@ -36,7 +36,7 @@ public  class topnHotItems extends KeyedProcessFunction<Tuple1<String>, resultEn
 
 
     @Override
-    public void processElement(resultEntity objectEntity, Context context, Collector<String> collector)  {
+    public void processElement(ResultEntity objectEntity, Context context, Collector<String> collector)  {
 
 
 
@@ -49,7 +49,7 @@ public  class topnHotItems extends KeyedProcessFunction<Tuple1<String>, resultEn
                     sessionOrderEntity.add(objectEntity.getSessionResultEntity());
                 } else {
                     if (sessionOrderEntity.peek() != null) {
-                        sessionResultEntity res=sessionOrderEntity.peek();
+                        SessionResultEntity res=sessionOrderEntity.peek();
                         if (res.getSessions() <= objectEntity.getSessionResultEntity().getSessions()) {
                             sessionOrderEntity.poll();
                             sessionOrderEntity.add(objectEntity.getSessionResultEntity());
@@ -63,7 +63,7 @@ public  class topnHotItems extends KeyedProcessFunction<Tuple1<String>, resultEn
                         packetOrderEntity.add(objectEntity.getPacketResultEntity());
                     } else {
                     if (packetOrderEntity.peek() != null) {
-                        packetResultEntity res=packetOrderEntity.peek();
+                        PacketResultEntity res=packetOrderEntity.peek();
                         if ((res.getIn_pkts()+res.getOut_pkts()) <= (objectEntity.getPacketResultEntity().getIn_pkts()+objectEntity.getPacketResultEntity().getOut_pkts())) {
                             packetOrderEntity.poll();
                             packetOrderEntity.add(objectEntity.getPacketResultEntity());
@@ -76,7 +76,7 @@ public  class topnHotItems extends KeyedProcessFunction<Tuple1<String>, resultEn
                     byteOrderEntity.add(objectEntity.getByteResultEntity());
                 } else {
                     if (byteOrderEntity.peek() != null) {
-                        byteResultEntity res=byteOrderEntity.peek();
+                        ByteResultEntity res=byteOrderEntity.peek();
                         if ((res.getIn_bytes()+res.getOut_bytes()) <= (objectEntity.getByteResultEntity().getIn_bytes()+objectEntity.getByteResultEntity().getOut_bytes())) {
                             byteOrderEntity.poll();
                             byteOrderEntity.add(objectEntity.getByteResultEntity());
@@ -96,9 +96,9 @@ public  class topnHotItems extends KeyedProcessFunction<Tuple1<String>, resultEn
     @Override
     public void onTimer(long timestamp, OnTimerContext ctx, Collector<String> out)  {
 
-            for(sessionResultEntity en : sessionOrderEntity) {
+            for(SessionResultEntity en : sessionOrderEntity) {
 
-                metricsEntity metricsEntity = new metricsEntity();
+                MetricsEntity metricsEntity = new MetricsEntity();
                 metricsEntity.setName("sessions_top_" + en.getKey_by());
                 Map tags = new LinkedMap();
                 tags.put("vsys_id", en.getVsys_id());
@@ -145,10 +145,10 @@ public  class topnHotItems extends KeyedProcessFunction<Tuple1<String>, resultEn
 
             }
 
-        for(packetResultEntity en : packetOrderEntity){
+        for(PacketResultEntity en : packetOrderEntity){
 
 
-            metricsEntity metricsEntity = new metricsEntity();
+            MetricsEntity metricsEntity = new MetricsEntity();
             metricsEntity.setName("packets_top_" + en.getKey_by());
             Map tags = new LinkedMap();
             tags.put("vsys_id", en.getVsys_id());
@@ -195,15 +195,9 @@ public  class topnHotItems extends KeyedProcessFunction<Tuple1<String>, resultEn
 
 
         }
-        for(byteResultEntity en : byteOrderEntity){
+        for(ByteResultEntity en : byteOrderEntity){
 
-
-
-
-
-
-
-            metricsEntity metricsEntity = new metricsEntity();
+            MetricsEntity metricsEntity = new MetricsEntity();
             metricsEntity.setName("bytes_top_" + en.getKey_by());
             Map tags = new LinkedMap();
             tags.put("vsys_id", en.getVsys_id());
